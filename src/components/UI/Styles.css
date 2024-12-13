@@ -1,0 +1,15 @@
+.sliding-box {
+    transition: transform 0.5s ease-in-out;
+    /* Smooth transition */
+}
+
+.slide-right {
+    transform: translateX(125%);
+    /* Moves the box completely to the right */
+}
+
+
+.slide-left {
+    transform: translateX(-125%);
+    /* Moves the box completely to the right */
+}

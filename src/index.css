@@ -1,0 +1,63 @@
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Poppins' 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}
+
+@keyframes bounce {
+
+  0%,
+  100% {
+    transform: translateY(0);
+    /* No movement at the start and end */
+  }
+
+  50% {
+    transform: translateY(-10px);
+    /* Move up at the midpoint */
+  }
+}
+
+
+
+
+/* For Chrome, Safari, Edge */
+::-webkit-scrollbar {
+  width: 8px;
+  /* Width of the scrollbar */
+}
+
+::-webkit-scrollbar-track {
+  background: #f3f3f3;
+  /* Scrollbar track (background) color */
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: #15294E;
+  /* Color of the scrollbar thumb */
+  border-radius: 10px;
+  /* Round corners for the scrollbar thumb */
+  border: 2px solid #15294E;
+  /* Space around the thumb */
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: #555;
+  /* Darker color on hover */
+}
+
+/* For Firefox */
+* {
+  scrollbar-width: thin;
+  /* Makes scrollbar thinner */
+  scrollbar-color:  #15294E #FFF;
+  /* thumb and track colors */
+}

@@ -570,7 +570,7 @@ export default function MachineLogsTable() {
                   <Typography sx={TableStyles.headingStyle}>Start time</Typography>
                 </Stack>
               </TableCell>
-              <TableCell align="center">
+              {/* <TableCell align="center">
                 <Stack
                   direction={"row"}
                   gap={1}
@@ -578,7 +578,7 @@ export default function MachineLogsTable() {
                 >
                   <Typography sx={TableStyles.headingStyle}>End time</Typography>
                 </Stack>
-              </TableCell>
+              </TableCell> */}
               <TableCell align="center">
                 <Stack
                   direction={"row"}
@@ -649,9 +649,9 @@ export default function MachineLogsTable() {
                           <TableCell align="center" sx={{ margin: "0px", padding: "15px" }}>
                             <Typography sx={TableStyles.textStyle}>{routeLog.start_time || "NA"}</Typography>
                           </TableCell>
-                          <TableCell align="center" sx={{ margin: "0px", padding: "15px" }}>
+                          {/* <TableCell align="center" sx={{ margin: "0px", padding: "15px" }}>
                             <Typography sx={TableStyles.textStyle}>{routeLog.end_time || "NA"}</Typography>
-                          </TableCell>
+                          </TableCell> */}
                           <TableCell align="center" sx={{ margin: "0px", padding: "15px" }}>
                             <Typography sx={TableStyles.textStyle}>{log.userPort || "NA"}</Typography>
                           </TableCell>

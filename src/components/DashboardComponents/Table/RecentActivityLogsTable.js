@@ -233,7 +233,7 @@ export default function RecentActivityLogsTable() {
                             </TableCell>
 
 
-                            <TableCell align="center">
+                            {/* <TableCell align="center">
                                 <Stack
                                     direction={"row"}
                                     gap={1}
@@ -244,7 +244,8 @@ export default function RecentActivityLogsTable() {
                                         Logout Time
                                     </Typography>
                                 </Stack>
-                            </TableCell>
+                            </TableCell> */}
+
                             <TableCell align="center">
                                 <Stack
                                     direction={"row"}
@@ -310,9 +311,9 @@ export default function RecentActivityLogsTable() {
                 </Typography>
               </TableCell>
 
-              <TableCell align="center" sx={{ margin: "0px", padding: "15px" }}>
+              {/* <TableCell align="center" sx={{ margin: "0px", padding: "15px" }}>
                 <Typography sx={TableStyles.textStyle}>{engineLog.end_time || "NA"}</Typography>
-              </TableCell>
+              </TableCell> */}
 
               <TableCell align="center" sx={{ margin: "0px", padding: "15px" }}>
                 <Typography sx={TableStyles.textStyle}>{engineLog.lift_duration || "NA"}</Typography>

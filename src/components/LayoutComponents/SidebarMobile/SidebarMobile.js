@@ -19,10 +19,15 @@ import SelectedJobLogo from "../../../assets/Sidebar/JobSitesIconSelected.svg"
 import LogoutLogo from "../../../assets/Layout/Left_icon.png";
 import { useNavigate, useLocation } from "react-router-dom"; // Import useLocation
 
+import { useUser } from "../../../Context/UserContext";
+
 function Sidebar2({ onClose }) {
   const navigate = useNavigate();
   const location = useLocation(); // Get the current route
   const [selectedItem, setSelectedItem] = useState(0);
+
+    const { user, updateUserData } = useUser(); // Destructure user data from context
+    console.log("user role is " , user.role)
 
   const listItems = [
     { text: "Dashboard", icon: DashboardLogo, selectedIcon: SelectedDashboardLogo, route: "/dashboard" },
@@ -33,6 +38,44 @@ function Sidebar2({ onClose }) {
     { text: "Job Sites", icon: JobLogo, selectedIcon: SelectedJobLogo, route: "job-sites" },
     { text: "Maintenance", icon: MaintenanceLogo, selectedIcon: SelectedMaintenanceLogo, route: "maintenance", },
   ];
+
+  const SuperAdminlistItems = [
+    { text: "Dashboard", icon: DashboardLogo, selectedIcon: SelectedDashboardLogo, route: "/dashboard" },
+    { text: "Companies", icon: CompanyLogo, selectedIcon: SelectedCompanyLogo, route: "companies", },
+    { text: "Users", icon: UserLogo, selectedIcon: SelectedUserLogo, route: "user-management" },
+    { text: "Machines", icon: MachinesLogo, selectedIcon: SelectedMachinesLogo, route: "machines", },
+    { text: "Operators", icon: OperatorsLogo, selectedIcon: SelectedOperatorLogo, route: "operators", },
+    { text: "Job Sites", icon: JobLogo, selectedIcon: SelectedJobLogo, route: "job-sites" },
+    { text: "Maintenance", icon: MaintenanceLogo, selectedIcon: SelectedMaintenanceLogo, route: "maintenance", },
+  ];
+
+  const AdminlistItems = [
+    { text: "Dashboard", icon: DashboardLogo, selectedIcon: SelectedDashboardLogo, route: "/admin-dashboard" },
+
+    { text: "Users", icon: UserLogo, selectedIcon: SelectedUserLogo, route: "user-management" },
+    { text: "Machines", icon: MachinesLogo, selectedIcon: SelectedMachinesLogo, route: "machines", },
+    { text: "Operators", icon: OperatorsLogo, selectedIcon: SelectedOperatorLogo, route: "operators", },
+    { text: "Job Sites", icon: JobLogo, selectedIcon: SelectedJobLogo, route: "job-sites" },
+    { text: "Maintenance", icon: MaintenanceLogo, selectedIcon: SelectedMaintenanceLogo, route: "maintenance", },
+  ]
+
+  const CustomerlistItems = [
+    { text: "Dashboard", icon: DashboardLogo, selectedIcon: SelectedDashboardLogo, route: "/employee-dashboard" },
+    { text: "Machines", icon: MachinesLogo, selectedIcon: SelectedMachinesLogo, route: "machines", },
+    { text: "Maintenance", icon: MaintenanceLogo, selectedIcon: SelectedMaintenanceLogo, route: "maintenance", },
+  ]
+
+  let listToRender;
+if (user.role === "superAdmin") {
+    listToRender = SuperAdminlistItems;
+} else if (user.role === "admin") {
+    listToRender = AdminlistItems;
+} else if (user.role === "employee" || user.role === "operator" ) {
+    listToRender = CustomerlistItems;
+} else {
+    // Default or fallback case (e.g., handle unexpected roles)
+    listToRender = [];
+}
 
   // Synchronize the selected item with the current route
   useEffect(() => {
@@ -79,7 +122,7 @@ function Sidebar2({ onClose }) {
       <Divider sx={{ backgroundColor: "#FFF", opacity: "43%", }} />
 
       <List>
-        {listItems.map((item, index) => (
+        {listToRender.map((item, index) => (
           <ListItem
             button
             key={item.text}

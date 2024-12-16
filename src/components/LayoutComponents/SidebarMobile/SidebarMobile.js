@@ -20,6 +20,7 @@ import LogoutLogo from "../../../assets/Layout/Left_icon.png";
 import { useNavigate, useLocation } from "react-router-dom"; // Import useLocation
 
 import { useUser } from "../../../Context/UserContext";
+import { signOut, getAuth } from "firebase/auth";
 
 function Sidebar2({ onClose }) {
   const navigate = useNavigate();
@@ -90,6 +91,23 @@ if (user.role === "superAdmin") {
     navigate(route);
     onClose(false); // Close the sidebar when an item is clicked
   };
+
+    const handleLogout = async () => {
+      try {
+          // Sign out the user from Firebase Authentication
+          await signOut(getAuth());
+          
+          // Remove user data from localStorage (if any)
+          localStorage.removeItem('user');
+          localStorage.clear();
+  
+          
+          // Optionally, navigate to a login page after logging out
+          navigate("/login");
+      } catch (error) {
+          console.error("Logout error: ", error);
+      }
+  };
   
 
   return (
@@ -150,7 +168,7 @@ if (user.role === "superAdmin") {
           variant="contained"
           fullWidth
           startIcon={<img src={LogoutLogo} alt="logout" style={{ width: 'clamp(10px, 1.5vw, 14px)', height: 'clamp(10px, 1.5vw, 14px)' }} />}
-          onClick={() => navigate("/login")}
+          onClick={handleLogout}
           sx={{
             backgroundColor: "white",
             textTransform: "none",
@@ -159,6 +177,7 @@ if (user.role === "superAdmin") {
             fontSize: 'clamp(0.7rem, 1.2vw, 0.9rem)',
             padding: 'clamp(0.4rem, 0.8vw, 0.8rem)',
           }}
+          
         >
           Log out
         </Button>

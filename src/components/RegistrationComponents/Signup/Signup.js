@@ -358,87 +358,122 @@ function Signup() {
     justifyContent: "center",
     alignItems: "center",
     height: "100vh",
+    width: "100vw",
 }}>
-    <Box sx={{
-        width: { xs: "90%", sm: "600px", md: "700px" }, // Adjust width for different screen sizes
-        padding: "2rem",
-        backgroundColor: "rgba(255, 255, 255, 0.9)",
-        borderRadius: "8px",
-        boxShadow: "0 4px 10px rgba(0, 0, 0, 0.1)",
-        position: { xs: "static", md: "absolute" }, // Change position for smaller screens
-        right: { xs: "auto", md: "0px" }, // Adjust right alignment for smaller screens
-        height: { xs: "auto", md: "100%" }, // Adjust height for smaller screens
-    }}>
-        <Box sx={{
-            width: { xs: "100%", sm: "400px" }, // Adjust inner box width for smaller screens
-            margin: "0 auto",
-            textAlign: "center",
-        }}>
-            <Box sx={{ paddingBottom: "2.5rem", marginTop: 5 }}>
-                <img src={Ukeylogo} height={"70px"} width={"143px"} alt="Logo" />
-            </Box>
-            <Typography variant="h5" textAlign="center" mb={2}>
-                Register
-            </Typography>
-            <Box sx={{ textAlign: "center", mb: 2 }}>
-                <Typography variant="body2" color="primary" onClick={() => navigate("/login")} sx={{ cursor: "pointer" }}>
-                    Already have an account? Login here
-                </Typography>
-            </Box>
-            <Stack spacing={2}>
-                <TextField label="Full Name" name="name" value={formData.name} onChange={handleChange} fullWidth />
-                <TextField label="Email" name="email" value={formData.email} onChange={handleChange} fullWidth />
-                <TextField label="Phone Number" name="phone" value={formData.phone} onChange={handleChange} fullWidth />
-                <TextField label="Organization Name" name="organizationName" value={formData.organizationName} onChange={handleChange} fullWidth />
-                <TextField label="Organization Address" name="organizationAddress" value={formData.organizationAddress} onChange={handleChange} fullWidth />
-                <TextField
-                    label="Password"
-                    name="password"
-                    type={passwordVisible ? "text" : "password"}
-                    value={formData.password}
-                    onChange={handleChange}
-                    fullWidth
-                    InputProps={{
-                        endAdornment: (
-                            <VisibilityOutlinedIcon onClick={togglePasswordVisibility} style={{ cursor: "pointer" }} />
-                        ),
-                    }}
-                />
-                <TextField
-                    label="Confirm Password"
-                    name="confirmPassword"
-                    type={confirmPasswordVisible ? "text" : "password"}
-                    value={formData.confirmPassword}
-                    onChange={handleChange}
-                    fullWidth
-                    InputProps={{
-                        endAdornment: (
-                            <VisibilityOutlinedIcon onClick={toggleConfirmPasswordVisibility} style={{ cursor: "pointer" }} />
-                        ),
-                    }}
-                />
-            </Stack>
-            {error && (
-                <Typography color="error" mt={2} textAlign="center">
-                    {error}
-                </Typography>
-            )}
-            <Button variant="contained" fullWidth sx={{ mt: 2 }} onClick={handleRegister}>
-                Register
-            </Button>
-            <Box sx={{ mt: 2, textAlign: "center" }}>
-                <Button
-                    variant="outlined"
-                    fullWidth
-                    sx={{ display: "flex", alignItems: "center", justifyContent: "center" }}
-                    onClick={handleGoogleSignup}
-                >
-                    <GoogleIcon sx={{ mr: 1 }} />
-                    <Typography variant="body2">or sign up with Google</Typography>
-                </Button>
-            </Box>
-        </Box>
+<Box
+  sx={{
+    width: { xs: "90%", sm: "600px", md: "700px" }, // Adjust width
+    maxWidth: "100%", // Prevent overflow
+    padding: "2rem",
+    backgroundColor: "rgba(255, 255, 255, 0.9)",
+    borderRadius: "8px",
+    boxShadow: "0 4px 10px rgba(0, 0, 0, 0.1)",
+    position: { xs: "static", md: "absolute" }, // Change position for smaller screens
+    right: { xs: "auto", md: "0px" },
+    height: { xs: "auto", md: "90vh" , lg: "100vh" }, // Ensure height adjusts dynamically
+    maxHeight: "100vh", // Prevent exceeding the viewport
+    overflowY: "auto", // Allow scrolling for content overflow
+    boxSizing: "border-box", // Ensures padding doesn't add to the box size
+  }}
+>
+  <Box
+    sx={{
+      width: { xs: "100%", sm: "400px" },
+      margin: "0 auto",
+      textAlign: "center",
+    }}
+  >
+    <Box sx={{ paddingBottom: "2.5rem", marginTop: 5 }}>
+      <img src={Ukeylogo} height={"70px"} width={"143px"} alt="Logo" />
     </Box>
+    <Typography variant="h5" textAlign="center" mb={2}>
+      Register
+    </Typography>
+    <Box sx={{ textAlign: "center", mb: 2 }}>
+      <Typography
+        variant="body2"
+        color="primary"
+        onClick={() => navigate("/login")}
+        sx={{ cursor: "pointer" }}
+      >
+       
+
+         
+      </Typography>
+      <Typography
+                                color={"#F38712"}
+                                style={{ fontWeight: 600, fontSize: "1rem", fontFamily: "Inter", cursor: "pointer" }}
+                                onClick={() => navigate("/login")}
+                            >
+                  Already have an account?    Login here!
+                            </Typography>
+    </Box>
+    <Stack spacing={2}>
+      <TextField label="Full Name" name="name" value={formData.name} onChange={handleChange} fullWidth />
+      <TextField label="Email" name="email" value={formData.email} onChange={handleChange} fullWidth />
+      <TextField label="Phone Number" name="phone" value={formData.phone} onChange={handleChange} fullWidth />
+      <TextField label="Organization Name" name="organizationName" value={formData.organizationName} onChange={handleChange} fullWidth />
+      <TextField label="Organization Address" name="organizationAddress" value={formData.organizationAddress} onChange={handleChange} fullWidth />
+      <TextField
+        label="Password"
+        name="password"
+        type={passwordVisible ? "text" : "password"}
+        value={formData.password}
+        onChange={handleChange}
+        fullWidth
+        InputProps={{
+          endAdornment: (
+            <VisibilityOutlinedIcon onClick={togglePasswordVisibility} style={{ cursor: "pointer" }} />
+          ),
+        }}
+      />
+      <TextField
+        label="Confirm Password"
+        name="confirmPassword"
+        type={confirmPasswordVisible ? "text" : "password"}
+        value={formData.confirmPassword}
+        onChange={handleChange}
+        fullWidth
+        InputProps={{
+          endAdornment: (
+            <VisibilityOutlinedIcon onClick={toggleConfirmPasswordVisibility} style={{ cursor: "pointer" }} />
+          ),
+        }}
+      />
+    </Stack>
+    {error && (
+      <Typography color="error" mt={2} textAlign="center">
+        {error}
+      </Typography>
+    )}
+    <Button
+      variant="contained"
+      fullWidth
+      sx={{
+        mt: 2,
+        backgroundColor: "#14181F",
+        "&:hover": {
+          backgroundColor: "#0F1419", // Hover color
+        },
+      }}
+      onClick={handleRegister}
+    >
+      Register
+    </Button>
+    <Box sx={{ mt: 2, textAlign: "center" }}>
+      <Button
+        variant="outlined"
+        fullWidth
+        sx={{ display: "flex", alignItems: "center", justifyContent: "center" }}
+        onClick={handleGoogleSignup}
+      >
+        <GoogleIcon sx={{ mr: 1 }} />
+        <Typography variant="body2">or sign up with Google</Typography>
+      </Button>
+    </Box>
+  </Box>
+</Box>
+
 </Box>
 
     );

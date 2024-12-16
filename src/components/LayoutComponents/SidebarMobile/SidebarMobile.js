@@ -45,8 +45,9 @@ function Sidebar2({ onClose }) {
   const handleListItemClick = (index, route) => {
     setSelectedItem(index);
     navigate(route);
-    onClose(); // Close the sidebar when an item is clicked
+    onClose(false); // Close the sidebar when an item is clicked
   };
+  
 
   return (
     <Box

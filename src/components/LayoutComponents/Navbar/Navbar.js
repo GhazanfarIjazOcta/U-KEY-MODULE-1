@@ -113,6 +113,8 @@ export default function Navbar() {
   //   setSidebarOpen(null);
   // }
 
+  
+ 
   const handleSideBar = () => {
     setSidebarOpen(true);  // Simply open the sidebar
   };

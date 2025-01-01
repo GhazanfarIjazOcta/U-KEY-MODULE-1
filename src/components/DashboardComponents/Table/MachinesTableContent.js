@@ -5,14 +5,9 @@ import TableCell from "@mui/material/TableCell";
 import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
-import DoneOutlinedIcon from "@mui/icons-material/DoneOutlined";
-import ClearOutlinedIcon from "@mui/icons-material/ClearOutlined";
-import Paper from "@mui/material/Paper";
+
 import { Box, Stack, Typography, IconButton, Dialog } from "@mui/material";
 import { TableStyles } from "../../UI/Styles";
-
-import Edit from "../../../assets/Table/Edit.png";
-import Delete from "../../../assets/Table/Delete.png";
 
 import { onAuthStateChanged } from "firebase/auth";
 import { auth } from "../../../firebase"; // Firebase auth instance
@@ -37,6 +32,8 @@ import { useEffect } from "react";
 import Slider from "react-slick";
 
 import CloseIcon from "@mui/icons-material/Close";
+
+import { machineUI } from "../../UI/Main";
 
 export default function MachinesTableContent() {
   const { user, updatemachineData } = useUser(); // Destructure machine data from context
@@ -289,12 +286,7 @@ export default function MachinesTableContent() {
   return (
     <TableContainer
       sx={{
-        borderRadius: 0,
-        elevation: 0,
-        borderTop: "1px solid #EAECF0",
-        marginTop: "2.5rem",
-        background: "#FFF",
-        height: "60%"
+        ...machineUI.machineTableContent
       }}
     >
       <Table sx={{ minWidth: 650 }} aria-label="simple table">
@@ -391,19 +383,6 @@ export default function MachinesTableContent() {
               </Stack>
             </TableCell>
 
-            {/* <TableCell align="center">
-                            <Stack
-                                direction={"row"}
-                                gap={1}
-                                sx={{ width: "100%", justifyContent: "center" }}
-                            >
-                                <Typography sx={TableStyles.headingStyle}>
-
-                                    Lubricant Details
-                                </Typography>
-                            </Stack>
-                        </TableCell> */}
-
             <TableCell align="start">
               <Stack
                 direction={"row"}
@@ -427,16 +406,6 @@ export default function MachinesTableContent() {
                 </Typography>
               </Stack>
             </TableCell>
-
-            {/* <TableCell align="center">
-              <Stack
-                direction={"row"}
-                gap={1}
-                sx={{ width: "100%", justifyContent: "center" }}
-              >
-                <Typography sx={TableStyles.headingStyle}>Actions</Typography>
-              </Stack>
-            </TableCell> */}
           </TableRow>
         </TableHead>
 
@@ -453,12 +422,7 @@ export default function MachinesTableContent() {
                   >
                     <Typography
                       sx={{
-                        color: "#F38712",
-                        fontSize: "0.9rem",
-                        fontFamily: "Inter",
-                        textDecoration: "underline",
-                        cursor: "pointer",
-                        whiteSpace: "nowrap"
+                        ...machineUI.machineTabletypography1
                       }}
                       onClick={() => handleOpenImages(machine.image)} // Trigger popup
                     >

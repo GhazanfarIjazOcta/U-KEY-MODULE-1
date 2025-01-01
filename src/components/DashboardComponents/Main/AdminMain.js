@@ -28,6 +28,7 @@ import { getDatabase, ref, get, onValue } from "firebase/database";
 
 import { auth } from "../../../firebase"; // Firebase auth instance
 
+import {dashboardStylesAdmin} from "../../UI/Main"
 
 
 export default function AdminMain() {
@@ -135,14 +136,7 @@ export default function AdminMain() {
   return (
     <Box
       sx={{
-        flexGrow: 1,
-        position: 'absolute',
-        mt: { xs: 0, sm: 0, md: 0, lg: 5 },
-        overflowY: "auto",
-        height: "85vh",
-        background: "#F4F7F7",
-        gap: "0.5rem",
-        width: { lg: "82%", xs: "100%" }, // Prevent overflowing horizontally and vertically
+               ...dashboardStylesAdmin.mainbox
       }}
     >
       <Grid2

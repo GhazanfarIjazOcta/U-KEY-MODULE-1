@@ -34,6 +34,8 @@ import { useUser } from "../../../Context/UserContext";
 // import  { useContext } from 'react';
 // import { UserContext } from '../../../context/UserContext';
 
+import { navbarUI } from "../../UI/Main";
+
 
 
 const Search = styled("div")(({ theme }) => ({
@@ -98,9 +100,7 @@ export default function Navbar() {
 
 
 
-  const handleSideBarOpen = () => {
-    setSidebarOpen(true);
-  }
+
 
 
 
@@ -253,18 +253,7 @@ export default function Navbar() {
     <>
       <Box
         sx={{
-          color: "black",
-          // width: { xs: "98vw", lg: "79vw" },
-          width: "100%",
-          minHeight: "5.4rem",
-          display: "flex",
-          justifyContent: "space-between",
-          minWidth: "320px",
-          zIndex: 4,
-          position: "sticky",
-          top: 0, // Align to the top of the viewport
-          left: 0, // Align to the left of the viewport
-          background: "#F4F7F7"
+         ...navbarUI.navbarMainBox
         }}
 
 
@@ -287,11 +276,7 @@ export default function Navbar() {
             Wrap
             component="div"
             sx={{
-              display: { lg: "block" },
-              fontFamily: "Poppins",
-              fontWeight: 500,
-              fontSize: { sm: "1.5rem", xs: "1rem" },
-              color: "#202020",
+             ...navbarUI.navbarSecondBox
             }}
           >
             {headerMessage}

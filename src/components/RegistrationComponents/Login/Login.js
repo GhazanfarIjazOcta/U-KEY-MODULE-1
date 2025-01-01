@@ -8,10 +8,12 @@ import VisibilityOutlinedIcon from "@mui/icons-material/VisibilityOutlined";
 import VisibilityOffOutlinedIcon from "@mui/icons-material/VisibilityOffOutlined";
 import { RegistrationStyles } from "../../UI/Styles";
 import "../../UI/Styles.css";
-
+import { signOut, getAuth } from "firebase/auth";
 import { useUser } from "../../../Context/UserContext"; // Import your UserContext
 
+import { LoginUI } from "../../UI/Main";
 
+import  Loader from "../../UI//Loader"
 
 const Login = () => {
     const navigate = useNavigate();
@@ -94,6 +96,8 @@ const Login = () => {
     // };
 
     const handleLogin = async () => {
+
+        await signOut(auth); // Ensure no previous session exists
         setLoading(true);
         setError(null); // Clear previous errors
     
@@ -175,15 +179,14 @@ const Login = () => {
   
     const signupNavigation = () => navigate("/signup");
 
+    if (loading) {
+        return <div>{loading && <Loader />}</div>;
+      }
+
     return (
         <Box
             sx={{
-                backgroundImage: `url(${LoginImg})`,
-                backgroundSize: "cover",
-                backgroundPosition: "center",
-                backgroundRepeat: "no-repeat",
-                height: "100vh",
-                width: "100vw",
+          ...LoginUI.loginmainBox
             }}
         >
             <Box
@@ -191,7 +194,9 @@ const Login = () => {
                 flexDirection="column"
                 alignItems="center"
                 justifyContent="center"
-                sx={{ width: { lg: "45%", md: "50%", sm: "100%", xs: "100%" }, opacity: "95%", background: "#F5F7F9", height: "100vh" }}
+                sx={{
+                  ...LoginUI.loginSecondBox
+                    }}
             >
                 <Box sx={{ paddingBottom: "2.5rem" }}>
                     <img src={Ukeylogo} height={"70px"} width={"143px"} alt="Logo" />
@@ -248,13 +253,7 @@ const Login = () => {
                 <Button
                     variant="contained"
                     sx={{
-                        width: { xs: "80%", sm: "60%" },
-                        maxWidth: "370px",
-                        height: "3.1rem",
-                        backgroundColor: "#212122",
-                        color: "white",
-                        marginTop: "1.8em",
-                        textTransform: "none",
+                       ...LoginUI.loginButton
                     }}
                     onClick={handleLogin}
                     disabled={loading}

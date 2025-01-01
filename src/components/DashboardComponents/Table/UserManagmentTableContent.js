@@ -29,6 +29,8 @@ import { getAuth as getAdminAuth } from "firebase/auth";
 
 import CustomAlert from "../../UI/CustomAlert";
 
+import { userManagement } from "../../UI/Main";
+
 function createData(
   UserID,
   Name,
@@ -84,46 +86,7 @@ export default function TableContent() {
 
   console.log("all userssssssss", users);
 
-  // useEffect(() => {
-  //   const unsubscribe = onAuthStateChanged(auth, async (authUser) => {
-  //     if (authUser) {
-  //       try {
-  //         const db = getDatabase();
-  //         const usersRef = ref(db, "users");  // Reference to all users node
-  //         const snapshot = await get(usersRef);  // Fetch all users
-
-  //         if (snapshot.exists()) {
-  //           const allUsers = snapshot.val();
-  //           const filteredUsers = [];
-
-  //           // Loop through all users and filter by organizationID
-  //           for (const userKey in allUsers) {
-  //             const user = allUsers[userKey];
-
-  //             // Only add users whose organizationID matches the currentOrganizationID
-  //             if (user.organizationID === CurrentOrganizationID) {
-  //               filteredUsers.push({
-  //                 ...user,  // Spread to include user details
-  //                 userID: user.userID,
-  //               });
-  //             }
-  //           }
-
-  //           setUsers(filteredUsers);  // Update state with the filtered users
-  //         } else {
-  //           setError("No users found.");
-  //         }
-  //       } catch (err) {
-  //         setError(err.message);
-  //       }
-  //     } else {
-  //       setError("You must be logged in to view this page.");
-  //     }
-  //     setLoading(false);  // Set loading to false after fetching data
-  //   });
-
-  //   return () => unsubscribe(); // Cleanup on component unmount
-  // }, [CurrentOrganizationID]); // Re-run effect when the currentOrganizationID changes
+  
 
   useEffect(() => {
     const db = getDatabase();
@@ -279,12 +242,7 @@ export default function TableContent() {
     <TableContainer
       component={Paper}
       sx={{
-        borderRadius: 0,
-        elevation: 0,
-        borderTop: "1px solid #EAECF0",
-        height: "54vh",
-        width: "99%",
-        overflow: "none"
+        ...userManagement.usermanagementTablecontainer
       }}
     >
       <Table sx={{ minWidth: 650 }} aria-label="simple table">

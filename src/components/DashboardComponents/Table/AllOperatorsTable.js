@@ -21,7 +21,7 @@ import { useNavigate } from "react-router-dom";
 
 export default function AllOperatorsTable() {
 
- const route = 'add-maintenance'; // Define it if it's dynamic
+
 
   const navigate = useNavigate();
 

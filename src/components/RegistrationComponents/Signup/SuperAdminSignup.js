@@ -10,6 +10,8 @@ import { ref, set } from "firebase/database";
 import LoginImg from "../../../assets/Registration/Login.png";
 import Ukeylogo from "../../../assets/Registration/UkeyLogoRegistration.png";
 
+import { SignupUI } from "../../UI/Main";
+
 function SuperAdminSignup() {
     const navigate = useNavigate();
     const [formData, setFormData] = useState({
@@ -33,143 +35,6 @@ function SuperAdminSignup() {
         setFormData({ ...formData, [e.target.name]: e.target.value });
     };
 
-    // const handleRegister = async () => {
-    //     const { name, email, phone, organizationName, organizationAddress, password, confirmPassword } = formData;
-    
-    //     if (!name || !email || !phone || !organizationName || !organizationAddress || !password) {
-    //         setError("All fields are required.");
-    //         return;
-    //     }
-    
-    //     if (password !== confirmPassword) {
-    //         setError("Passwords do not match.");
-    //         return;
-    //     }
-    
-    //     setLoading(true);
-    //     try {
-    //         // Set session persistence
-    //         await setPersistence(auth, browserSessionPersistence);
-    
-    //         // Register user in Firebase Authentication
-    //         const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-    //         const uid = userCredential.user.uid;
-    
-    //         // Generate organizationID
-    //         const organizationID = Math.random().toString(36).substring(2, 15);
-    
-    //         // User data
-    //         const userData = {
-    //             email,
-    //             name,
-    //             lastLogin: new Date().toISOString().slice(0, 19).replace('T', ' '),
-    //             organizationID, // Link user to their organization
-    //             phone,
-    //             role: "admin",
-    //             status: "inactive",              
-    //             userID: uid,
-    //         };
-    
-    //         // Save organization data first
-    //         const organizationRef = ref(rtdb, `organizations/${organizationID}`);
-    //         await set(organizationRef, {
-    //             name: organizationName,
-    //             address: organizationAddress,
-    //             organizationID: organizationID,
-    //             users: { [uid]: userData },
-    //             machines: {},
-    //             status: "inactive",
-    //             subscriptionStatus: "inactive"
-    //         });
-    
-    //         // Save user data within the organization
-    //         const userRef = ref(rtdb, `organizations/${organizationID}/users/${uid}`);
-    //         await set(userRef, userData);
-    
-    //         alert("Registration successful!");
-    //         navigate("/login");
-    //     } catch (err) {
-    //         setError("Registration failed. Please try again.");
-    //         console.error("Registration error:", err);
-    //     } finally {
-    //         setLoading(false);
-    //     }
-    // };
-
-
-
-
-    // const handleRegister = async () => {
-    //     const { name, email, phone, organizationName, organizationAddress, password, confirmPassword } = formData;
-    
-    //     if (!name || !email || !phone || !organizationName || !organizationAddress || !password) {
-    //         setError("All fields are required.");
-    //         return;
-    //     }
-    
-    //     if (password !== confirmPassword) {
-    //         setError("Passwords do not match.");
-    //         return;
-    //     }
-    
-    //     setLoading(true);
-    //     try {
-    //         // Set session persistence
-    //         await setPersistence(auth, browserSessionPersistence);
-    
-    //         // Register user in Firebase Authentication
-    //         const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-    //         const uid = userCredential.user.uid;
-    
-    //         // Generate organizationID (unique random ID)
-    //         const organizationID = Math.random().toString(36).substring(2, 15);
-    
-    //         // User data
-    //         const userData = {
-    //             email,
-    //             name,
-    //             lastLogin: new Date().toISOString(),
-    //             organizationID,
-    //             phone,
-    //             role: "operator",
-    //             status: "active",
-    //             userID: uid,
-    //             serialNumbers: {
-    //                 "123": "67896",
-    //                 "IP4560": "34567"
-    //             }
-    //         };
-    
-    //         // Organization data
-    //         const organizationData = {
-    //             name: organizationName,
-    //             address: organizationAddress,
-    //             organizationID,
-    //             status: "inactive",
-    //             subscriptionStatus: "inactive"
-    //         };
-    
-    //         // Save organization data
-    //         const organizationRef = ref(rtdb, `organizations/${organizationID}`);
-    //         await set(organizationRef, organizationData);
-    
-    //         // Save user data under global 'users' and link in organization
-    //         const userRef = ref(rtdb, `users/${uid}`);
-    //         await set(userRef, userData);
-    
-    //         // Link user in organization's user list
-    //         const orgUserRef = ref(rtdb, `organizations/${organizationID}/users/${uid}`);
-    //         await set(orgUserRef, userData);
-    
-    //         alert("Registration successful!");
-    //         navigate("/login");
-    //     } catch (err) {
-    //         setError("Registration failed. Please try again.");
-    //         console.error("Registration error:", err);
-    //     } finally {
-    //         setLoading(false);
-    //     }
-    // };
     
 
     const handleRegister = async () => {
@@ -255,35 +120,17 @@ function SuperAdminSignup() {
 
     return (
         <Box sx={{ 
-            backgroundImage: `url(${LoginImg})`,
-            backgroundSize: "cover", 
-            display: "flex", 
-            justifyContent: "center", 
-            alignItems: "center", 
-            height: "100vh",
+           ...SignupUI.signupMainBox
         }}>
             <Box sx={{
-                width: "700px", 
-                height: "100%",
-                padding: "2rem", 
-                backgroundColor: "rgba(255, 255, 255, 0.9)", // Fixed camelCase and string format
-                // backdropFilter: "blur(10px)", // Fixed camelCase
-                // WebkitBackdropFilter: "blur(10px)", // Fixed camelCase and Safari prefix
-                borderRadius: "8px", 
-                boxShadow: "0 4px 10px rgba(0, 0, 0, 0.1)", 
-                position: "absolute", 
-                right: "0px" // Position box to the right
+             ...SignupUI.signupSecondWhiteBox
             }}>
 
                 <Box 
                 
                 sx={{
 
-                    width: "400px", 
-                    
-                    margin: "0 auto", // Centers the box horizontally
-                    textAlign: "center", // Centers inline or text content
-
+                ...SignupUI.signupThirdBox
                 }}
                 
                 >
@@ -346,7 +193,7 @@ function SuperAdminSignup() {
                         {error}
                     </Typography>
                 )}
-                <Button variant="contained" fullWidth sx={{ mt: 2 }} onClick={handleRegister}>
+                <Button variant="contained" fullWidth sx={{ ...SignupUI.signupRegisterButton }} onClick={handleRegister}>
                     Register
                 </Button>
 

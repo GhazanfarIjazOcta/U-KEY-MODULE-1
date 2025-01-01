@@ -24,6 +24,8 @@ import { getAuth, deleteUser } from "firebase/auth"; // Import deleteUser from F
 
 import { onValue } from "firebase/database"; // Import onValue
 
+import {userManagement} from "../../UI/Main"
+
 
 export default function UserManagment() {
 
@@ -48,64 +50,6 @@ const [adminUsers, setAdminUsers] = useState(0);
 const [operatorUsers, setOperatorUsers] = useState(0);
 const [employeeUsers, setEmployeeUsers] = useState(0);
 
-// useEffect(() => {
-//   const unsubscribeAuth = onAuthStateChanged(auth, (authUser) => {
-//     if (authUser) { // Check if the user is authenticated
-//       try {
-//         const db = getDatabase();
-//         const usersRef = ref(db, `organizations/${CurrentOrganizationID}/users`); // Adjust the path to users under the organization
-
-//         // Use onValue for real-time updates
-//         const unsubscribeDB = onValue(usersRef, (snapshot) => {
-//           if (snapshot.exists()) {
-//             const allUsers = snapshot.val();
-
-//             // Convert the users object to an array
-//             const filteredUsers = Object.keys(allUsers).map((key) => ({
-//               id: key,
-//               ...allUsers[key],
-//             }));
-
-//             // Set filtered users in state
-//             setUsers(filteredUsers);
-
-//             // Count total users
-//             const totalUsers = filteredUsers.length;
-
-//             // Count users with 'admin' role
-//             const adminUsers = filteredUsers.filter((user) => user.role === 'admin').length;
-
-//             // Count users with 'operator' role
-//             const operatorUsers = filteredUsers.filter((user) => user.role === 'operator').length;
-
-//             // Count users with 'operator' role
-//             const employeeUsers = filteredUsers.filter((user) => user.role === 'employee').length;
-
-//             // Set the counts in state
-//             setTotalUsers(totalUsers);
-//             setAdminUsers(adminUsers);
-//             setOperatorUsers(operatorUsers);
-//             setEmployeeUsers(employeeUsers)
-//           } else {
-//             setError("No users found.");
-//           }
-//         });
-
-//         // Cleanup the database listener when the component unmounts
-//         return () => unsubscribeDB();
-//       } catch (err) {
-//         setError(err.message);
-//       }
-//     } else {
-//       setError("You must be logged in to view this page.");
-//       // navigate("/login"); // Optional redirect to login if the user is not authenticated
-//     }
-//     setLoading(false); // Set loading to false after fetching data
-//   });
-
-//   // Cleanup the auth listener when the component unmounts
-//   return () => unsubscribeAuth();
-// }, [navigate, CurrentOrganizationID]); // Add CurrentOrganizationID to dependency array
 
 
 
@@ -176,14 +120,7 @@ useEffect(() => {
   return (
     <Box
       sx={{
-        position: "absolute",
-        mt: { xs: 13, sm: 12, md: 12, lg: 12 },
-        // Adjust padding based on the screen size
-        px: { xs: 2, sm: 2, md: 2, lg: 0 }, // Remove padding at larger screens where sidebar becomes toggle
-        ml: { xs: 0, sm: 0, md: 0, lg: 0, xl: 0 }, // Leave space for the sidebar on larger screens
-        overflow: "none", // Prevent overflowing horizontally and vertically
-        width: "82%", // Ensure it takes full width
-        // maxWidth: "1200px", // Set a max width as needed
+      ...userManagement.mainboxUserManagement
 
       }}
     >

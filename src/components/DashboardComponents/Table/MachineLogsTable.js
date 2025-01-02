@@ -30,10 +30,80 @@ export default function MachineLogsTable() {
 
   const [logs, setLogs] = useState([]);
 
+  let allLogs = [];
+
   console.log("here are the engine logs ..,.,.,.,., ", logs);
 
   useEffect(() => {
-    const machinesRef = ref(rtdb, "machines");
+    const loguserRef = ref(rtdb, "users");  
+  
+    // Setup real-time listener for the users data
+    const unsubscribe = onValue(loguserRef, (snapshot) => {
+      if (snapshot.exists()) {
+        const logusers = snapshot.val();
+        const orgUsers = Object.values(logusers).filter(
+          (user) => user.organizationID === CurrentOrganizationID
+        );
+  
+       
+  
+        orgUsers.forEach((user) => {
+          const userID = "M5YXpZpmehgWRmlyYPwzFpbK6qU2"; // Replace with actual logic if needed
+  
+          if (userID) {
+            const userRef = ref(rtdb, `users/${userID}`);
+            
+            get(userRef)
+              .then((userSnapshot) => {
+                if (userSnapshot.exists()) {
+                  const userData = userSnapshot.val();
+                  const userName = userData.name; // Ensure correct fetching of userName
+                  const machineIP = user.machineID; // Assuming you want machine IP
+                  const userPorts = Object.values(userData.serialNumbers).map(
+                    (entry) => entry.serial
+                  );
+                  const organizationID = userData.organizationID;
+  
+                  // Collect logs
+                  const logs = {
+                    userID,
+                    userName,
+                    machineIP,
+                    organizationID,
+                    userPorts,
+                    engineLogs: userData["Engine Logs"],
+                    routeLogs: userData["Route Logs"],
+                  };
+  
+                  allLogs.push(logs);
+  
+                  // Update logs state
+                  setLogs([...allLogs]);
+                } else {
+                  console.warn(`User ID ${userID} does not exist.`);
+                }
+              })
+              .catch((error) => {
+                console.error(
+                  `Error fetching user data for ${userID}:`,
+                  error
+                );
+              });
+          }
+        });
+      } else {
+        console.warn("No users found for the current organization ID.");
+      }
+    });
+  
+    // Cleanup function to stop listening to real-time updates
+    return () => unsubscribe();
+  }, [CurrentOrganizationID]);
+  
+ 
+
+  useEffect(() => {
+    const machinesRef = ref(rtdb, "machines");  
 
     // Setup real-time listener for the machines data
     const unsubscribe = onValue(machinesRef, (snapshot) => {
@@ -45,7 +115,7 @@ export default function MachineLogsTable() {
           (machine) => machine.organizationID === CurrentOrganizationID
         );
 
-        const allLogs = [];
+        // const allLogs = [];
 
         orgMachines.forEach((machine) => {
           // Iterate over operator IDs
@@ -159,7 +229,7 @@ export default function MachineLogsTable() {
         <Table>
           <TableHead sx={{ backgroundColor: "#FCFCFD" }}>
             <TableRow>
-              <TableCell align="right">
+              {/* <TableCell align="right">
                 <Stack
                   direction={"row"}
                   gap={1}
@@ -169,7 +239,7 @@ export default function MachineLogsTable() {
                     Machine ID/ Name
                   </Typography>
                 </Stack>
-              </TableCell>
+              </TableCell> */}
               <TableCell align="center">
                 <Stack
                   direction={"row"}
@@ -256,14 +326,14 @@ export default function MachineLogsTable() {
                             "&:last-child td, &:last-child th": { border: 0 }
                           }}
                         >
-                          <TableCell
+                          {/* <TableCell
                             align="center"
                             sx={{ margin: "0px", padding: "15px" }}
                           >
                             <Typography sx={TableStyles.textStyle}>
                               {log.machineIP}
                             </Typography>
-                          </TableCell>
+                          </TableCell> */}
                           <TableCell
                             align="center"
                             sx={{ margin: "0px", padding: "15px" }}

@@ -385,7 +385,7 @@ export default function TableContent() {
             </TableCell>
           </TableRow>
         </TableHead>
-
+{/* 
         <TableBody>
           {users.map((user) => (
             <TableRow key={user.id}>
@@ -499,7 +499,123 @@ export default function TableContent() {
               </TableCell>
             </TableRow>
           ))}
-        </TableBody>
+        </TableBody> */}
+
+
+        <TableBody>
+  {users.filter(user => user.role === 'admin' || user.role === 'superAdmin').map((user) => (
+    <TableRow key={user.id}>
+      <TableCell align="start">{user.userID}</TableCell>
+      <TableCell align="start">{user.name}</TableCell>
+      <TableCell align="start">{user.email}</TableCell>
+      <TableCell align="start">{user.phone}</TableCell>
+      <TableCell align="start">{user.role}</TableCell>
+
+      <TableCell align="start">
+        <Box
+          sx={{
+            width: "80px",
+            height: "25px",
+            backgroundColor: user.status === "active" ? "#ECFDF3" : "#F2F4F7",
+            borderRadius: "40%",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            gap: "10px"
+          }}
+        >
+          <Box
+            sx={{
+              width: 6,
+              height: 6,
+              borderRadius: "50%",
+              backgroundColor: user.status === "active" ? "#28A745" : "#6C757D"
+            }}
+          />
+          <Typography
+            fontWeight={500}
+            fontSize={"14px"}
+            sx={{
+              color: user.status === "active" ? "#037847" : "#364254"
+            }}
+            fontFamily={"Inter"}
+          >
+            {user.status}
+          </Typography>
+        </Box>
+      </TableCell>
+
+      <TableCell align="start">
+        {user.lastLogin
+          ? new Date(user.lastLogin).toLocaleString("en-US", {
+              year: "numeric",
+              month: "2-digit",
+              day: "2-digit",
+              hour: "2-digit",
+              minute: "2-digit",
+              second: "2-digit",
+              hour12: true // For AM/PM format, set to false for 24-hour format
+            })
+          : "N/A"}
+      </TableCell>
+      <TableCell align="start">
+        {user.role === "superAdmin" ? (
+          <Box
+            sx={{
+              padding: "4px 8px",
+              backgroundColor: "#E3F2FD",
+              color: "#0D47A1",
+              borderRadius: "8px",
+              fontWeight: "bold",
+              fontSize: "14px"
+            }}
+            // onClick={handleSuperAdminAction}
+            style={{ cursor: "pointer" }}
+          >
+            Super Admin
+          </Box>
+        ) : user.userID === CurrentUserID ? (
+          <Box
+            sx={{
+              padding: "4px 8px",
+              backgroundColor: "#E3F2FD",
+              color: "#0D47A1",
+              borderRadius: "8px",
+              fontWeight: "bold",
+              fontSize: "14px"
+            }}
+            // onClick={handleAdminAction}
+            style={{ cursor: "pointer" }}
+          >
+            You
+          </Box>
+        ) : (
+          <Stack direction={"row"} gap={2} justifyContent="start">
+            <img
+              src={Edit}
+              width="24px"
+              height="24px"
+              onClick={() => handleEdit(user)}
+              style={{ cursor: "pointer" }}
+              alt="Edit"
+            />
+            <img
+              src={Delete}
+              width="24px"
+              height="24px"
+              onClick={() => handleDeleteUser(user.userID, user.users)}
+              style={{ cursor: "pointer" }}
+              alt="Delete"
+            />
+          </Stack>
+        )}
+      </TableCell>
+    </TableRow>
+  ))}
+</TableBody>
+
+
+        
 
         {/* Edit Modal */}
         <Modal open={openEditModal} onClose={handleCloseEditModal}>

@@ -153,7 +153,7 @@ useEffect(() => {
           <TableHeader
             text={"User Management"}
             searchText={"User name"}
-            buttonText={"Add User"}
+            buttonText={"Add Admin"}
             route={"add-user"}
           />
         </Box>

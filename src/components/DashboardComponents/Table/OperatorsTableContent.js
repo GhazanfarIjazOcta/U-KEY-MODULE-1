@@ -33,6 +33,9 @@ import CustomAlert from "../../UI/CustomAlert";
 
 export default function OperatorsTableContent() {
 
+
+  
+
   const { user } = useUser(); // Destructure user data from context
   const CurrentOrganizationID = user?.organizationID;
 
@@ -110,6 +113,7 @@ export default function OperatorsTableContent() {
     // No need to unsubscribe if onValue is used because it is a listener
   }, [user, CurrentOrganizationID]); // Rerun effect when user or organization ID changes
 
+  
   const handleStatusToggle = (operatorId, currentStatus) => {
     // Determine new status
     const newStatus = currentStatus === "active" ? "inactive" : "active";
@@ -144,6 +148,122 @@ export default function OperatorsTableContent() {
         });
       });
   };
+
+  
+
+
+  const [availableMachineIPs, setAvailableMachineIPs] = useState([]);
+const [selectedMachineIP, setSelectedMachineIP] = useState("");
+
+
+
+
+
+useEffect(() => {
+  // Fetch machine IPs from Firebase
+  const fetchMachineIPs = async () => {
+    const db = getDatabase();
+    const machinesRef = ref(db, "machines"); // Path to machines node in Firebase
+    onValue(machinesRef, (snapshot) => {
+      const machineData = snapshot.val();
+      if (machineData) {
+        setAvailableMachineIPs(Object.keys(machineData)); // Get machine IPs
+      }
+    });
+  };
+
+  fetchMachineIPs();
+}, []);
+
+const handleAssignMachineIP = (operatorId) => {
+  if (!selectedMachineIP) {
+    setAlert({
+      open: true,
+      severity: "error",
+      message: "Please select a valid Machine IP.",
+    });
+    return;
+  }
+
+  const db = getDatabase();
+  const operatorRef = ref(db, `users/${operatorId}`);
+  const updatedData = {
+    machineIP: selectedMachineIP, // Assign selected machine IP
+  };
+
+  // Step 1: Check the machine codes and remove the user's tempIp from the codes field
+  const machineRef = ref(db, `machines/${selectedMachineIP}`);
+  
+  get(machineRef)
+    .then((snapshot) => {
+      if (snapshot.exists()) {
+        const machineData = snapshot.val();
+        const tempIp = operators.find(op => op.id === operatorId).tempIp;
+
+        // Check and remove the tempIp from the machine codes
+        if (machineData.codes[tempIp]) {
+          delete machineData.codes[tempIp]; // Remove the tempIp from codes
+        }
+        
+        // Update machine with the userID and new data
+        update(machineRef, {
+          operators: {
+            [operatorId]: {
+              userID: operatorId
+            }
+          },
+          codes: machineData.codes
+        });
+
+        // Update operator with the selected machine IP
+        update(operatorRef, updatedData)
+          .then(() => {
+            console.log(`Machine IP ${selectedMachineIP} assigned to operator ${operatorId}`);
+            setOperators((prevOperators) =>
+              prevOperators.map((op) =>
+                op.id === operatorId ? { ...op, machineIP: selectedMachineIP } : op
+              )
+            );
+            setAlert({
+              open: true,
+              severity: "success",
+              message: "Machine IP assigned successfully!",
+            });
+          })
+          .catch((error) => {
+            console.error("Error assigning Machine IP:", error);
+            setAlert({
+              open: true,
+              severity: "error",
+              message: "Failed to assign Machine IP.",
+            });
+          });
+      } else {
+        console.error("Machine not found!");
+        setAlert({
+          open: true,
+          severity: "error",
+          message: "Machine not found!",
+        });
+      }
+    })
+    .catch((error) => {
+      console.error("Error retrieving machine:", error);
+      setAlert({
+        open: true,
+        severity: "error",
+        message: "Failed to retrieve machine details.",
+      });
+    });
+};
+
+
+
+
+
+
+
+
 
   if (loading) return <div>Loading...</div>;
   // if (error) return <div>Error: {error}</div>;
@@ -298,27 +418,53 @@ export default function OperatorsTableContent() {
                       })
                     : "N/A"}
                 </TableCell>
-                <TableCell align="start">
-                  <Stack direction={"row"} justifyContent="center">
-                    <Switch
-                      checked={operator.status === "active"} // Determines if the toggle is ON
-                      onChange={() =>
-                        handleStatusToggle(operator.userID, operator.status)
-                      } // Handle toggle action
-                      color="success" // Optional: Green toggle for "active"
-                      inputProps={{
-                        "aria-label": `Toggle status for ${operator.name}`
-                      }} // Accessibility
-                    />
-                    {/* <img
-                      src={Delete}
-                      width="40px"
-                      height="30px"
-                      style={{ cursor: "pointer" }}
-                      alt="Delete"
-                    /> */}
-                  </Stack>
-                </TableCell>
+
+               
+
+                
+                <TableCell align="center">
+   <Stack direction={"row"} gap={1} sx={{ width: "100%", justifyContent: "center" }}>
+     {/* <Typography sx={TableStyles.headingStyle}>Assign Machine IP</Typography> */}
+     <TextField
+       select
+       label="Select IP"
+       value={selectedMachineIP}
+       onChange={(e) => setSelectedMachineIP(e.target.value)}
+       fullWidth
+       SelectProps={{
+         native: true,
+       }}
+     >
+       <option value="">Select Machine IP</option>
+       {availableMachineIPs.map((ip, index) => (
+         <option key={index} value={ip}>
+           {ip}
+         </option>
+       ))}
+     </TextField>
+   </Stack>
+ </TableCell>
+
+
+ <TableCell align="center">
+  <Stack direction={"row"} justifyContent="center">
+    <Switch
+      checked={operator.status === "active"}
+      onChange={() => handleStatusToggle(operator.userID, operator.status)}
+      color="success"
+    />
+    <img
+      src={Edit} // Use your Edit icon
+      width="40px"
+      height="30px"
+      style={{ cursor: "pointer" }}
+      alt="Edit"
+      onClick={() => handleAssignMachineIP(operator.userID)} // Trigger IP assignment
+    />
+  </Stack>
+</TableCell>
+
+
               </TableRow>
             ))
           ) : (

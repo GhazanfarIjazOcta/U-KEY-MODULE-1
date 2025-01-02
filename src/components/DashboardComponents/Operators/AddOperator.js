@@ -25,14 +25,16 @@ import { useUser } from "../../../Context/UserContext";
 
 import CustomAlert from "../../UI/CustomAlert";
 
+import { useNavigate } from "react-router-dom";
 
-function AddUser() {
+
+function AddOperator() {
   const [formData, setFormData] = useState({
     userId: "",
     name: "",
     email: "",
     phone: "",
-    role: "admin", // Default role
+    role: "operator", // Default role
     status: "inactive", // Default status
     password: "", // Password field
     serialNumbers: {}, // Store all serial numbers
@@ -41,6 +43,8 @@ function AddUser() {
   });
 
   const [availableIPs, setAvailableIPs] = useState([]); // State to store IPs
+
+  const navigate = useNavigate();
 
   const { user } = useUser();
   const CurrentUserID = user.uid;
@@ -90,7 +94,7 @@ function AddUser() {
     // if (tempIp && tempSerial) {
     //   serialNumbers[tempIp] = { ip: tempIp, serial: tempSerial }; // Add to serialNumbers
     // }
-  
+ 
     try {
       // Step 2: Create the new user in Firebase Auth
       const newUser = await createUserWithEmailAndPassword(
@@ -144,11 +148,11 @@ function AddUser() {
       });
   
       // alert("User added successfully!");
-      setAlert({
-        open: true,
-        severity: "success",
-        message: "User added successfully!.",
-      });
+      // setAlert({
+      //   open: true,
+      //   severity: "success",
+      //   message: "User added successfully!.",
+      // });
   
       // Reset the form
       setFormData({
@@ -166,7 +170,7 @@ function AddUser() {
       });
     } catch (error) {
       console.error("Error adding user:", error.message);
-      alert("Failed to add user: " + error.message);
+      // alert("Failed to add user: " + error.message);
     }
   };
 
@@ -249,11 +253,11 @@ function AddUser() {
         
       </Box>
 
-      <Stack direction="row" justifyContent="flex-end">
-        <Button sx={{ backgroundColor: "#15294E" }} variant="contained" onClick={handleAddUser}>
-          Add User
-        </Button>
-      </Stack>
+          <Stack direction="row" justifyContent="flex-end">
+              <Button sx={{ backgroundColor: "#15294E" }} variant="contained" onClick={handleAddUser}>
+                Add Operator
+              </Button>
+            </Stack>
 
       <CustomAlert
         open={alert.open}
@@ -266,4 +270,4 @@ function AddUser() {
   );
 }
 
-export default AddUser;
+export default AddOperator;

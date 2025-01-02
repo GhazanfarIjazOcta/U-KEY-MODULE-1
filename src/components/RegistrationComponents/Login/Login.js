@@ -52,21 +52,24 @@ const Login = () => {
     }, []);
 
     const getUserData = async (userId) => {
-        const userRef = ref(rtdb, `users/${userId}`); // Fetching from global users node
+        const userRef = ref(rtdb, `users/${userId}`);
         try {
             const snapshot = await get(userRef);
             if (snapshot.exists()) {
-                return snapshot.val(); // Return the user data (email, role, etc.)
+                console.log("User Data:", snapshot.val());
+                return snapshot.val();
             } else {
+                console.error("User data does not exist for ID:", userId);
                 setError("User data does not exist.");
                 return null;
             }
         } catch (error) {
-            console.error("Error fetching user data:", error);
+            console.error("Error fetching user data:", error); // Log full error
             setError("Failed to fetch user data.");
             return null;
         }
     };
+    
 
     // const handleLogin = async () => {
     //     setLoading(true);
@@ -147,6 +150,7 @@ const Login = () => {
 
 
     const handleFirebaseErrors = (error) => {
+        console.error("Firebase Error:", error); // Log the error object
         let errorMessage = "";
         switch (error.code) {
             case "auth/invalid-email":
@@ -166,6 +170,7 @@ const Login = () => {
         }
         setError(errorMessage);
     };
+    
 
 
 

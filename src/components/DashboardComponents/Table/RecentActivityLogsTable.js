@@ -36,6 +36,8 @@ export default function RecentActivityLogsTable() {
     console.log("user organization id in ", user.organizationID);
   
     const CurrentUserID = user.userID;
+
+    console.log("userid => " , CurrentUserID)
   
     console.log("user current id in ", CurrentUserID);
     const CurrentOrganizationID = user.organizationID;
@@ -43,6 +45,77 @@ export default function RecentActivityLogsTable() {
     const [logs, setLogs] = useState([]);
   
     console.log("here are the engine logs ..,.,.,.,., ", logs);
+
+
+     let allLogs = [];
+    
+      console.log("here are the engine logs ..,.,.,.,., ", logs);
+    
+      useEffect(() => {
+        const loguserRef = ref(rtdb, "users");  
+      
+        // Setup real-time listener for the users data
+        const unsubscribe = onValue(loguserRef, (snapshot) => {
+          if (snapshot.exists()) {
+            const logusers = snapshot.val();
+            const orgUsers = Object.values(logusers).filter(
+              (user) => user.organizationID === CurrentOrganizationID
+            );
+      
+           
+      
+            orgUsers.forEach((user) => {
+              const userID = "M5YXpZpmehgWRmlyYPwzFpbK6qU2"; // Replace with actual logic if needed
+      
+              if (userID) {
+                const userRef = ref(rtdb, `users/${userID}`);
+                
+                get(userRef)
+                  .then((userSnapshot) => {
+                    if (userSnapshot.exists()) {
+                      const userData = userSnapshot.val();
+                      const userName = userData.name; // Ensure correct fetching of userName
+                      const machineIP = user.machineID; // Assuming you want machine IP
+                      const userPorts = Object.values(userData.serialNumbers).map(
+                        (entry) => entry.serial
+                      );
+                      const organizationID = userData.organizationID;
+      
+                      // Collect logs
+                      const logs = {
+                        userID,
+                        userName,
+                        machineIP,
+                        organizationID,
+                        userPorts,
+                        engineLogs: userData["Engine Logs"],
+                        routeLogs: userData["Route Logs"],
+                      };
+      
+                      allLogs.push(logs);
+      
+                      // Update logs state
+                      setLogs([...allLogs]);
+                    } else {
+                      console.warn(`User ID ${userID} does not exist.`);
+                    }
+                  })
+                  .catch((error) => {
+                    console.error(
+                      `Error fetching user data for ${userID}:`,
+                      error
+                    );
+                  });
+              }
+            });
+          } else {
+            console.warn("No users found for the current organization ID.");
+          }
+        });
+      
+        // Cleanup function to stop listening to real-time updates
+        return () => unsubscribe();
+      }, [CurrentOrganizationID]);
   
     useEffect(() => {
         const machinesRef = ref(rtdb, "machines");
@@ -55,7 +128,7 @@ export default function RecentActivityLogsTable() {
               (machine) => machine.organizationID === CurrentOrganizationID
             );
       
-            const allLogs = [];
+            // const allLogs = [];
       
             orgMachines.forEach((machine) => {
               for (const serial in machine.operators) {
@@ -109,7 +182,7 @@ export default function RecentActivityLogsTable() {
       }, [CurrentOrganizationID]);
   
     const data = logs.map((log) => ({
-      userID: log.userID,
+      userID: log.userID || "1234",
       userName: log.userName || "Unknown", // Fallback if userName doesn't exist
       machineIP: log.machineIP,
       organizationID:  log.organizationID,
@@ -169,7 +242,7 @@ export default function RecentActivityLogsTable() {
 
                     <TableHead sx={{ backgroundColor: "#FCFCFD" }}>
                         <TableRow>
-                            <TableCell align="right">
+                            {/* <TableCell align="right">
                                 <Stack
                                     direction={"row"}
                                     gap={1}
@@ -180,7 +253,7 @@ export default function RecentActivityLogsTable() {
                                         Machine ID/ Name
                                     </Typography>
                                 </Stack>
-                            </TableCell>
+                            </TableCell> */}
 
                             <TableCell align="center">
                                 <Stack
@@ -289,9 +362,9 @@ export default function RecentActivityLogsTable() {
               key={`${log.userID}-${index}`}
               sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
             >
-              <TableCell align="center" sx={{ margin: "0px", padding: "15px" }}>
+              {/* <TableCell align="center" sx={{ margin: "0px", padding: "15px" }}>
                 <Typography sx={TableStyles.textStyle}>{log.machineIP}</Typography>
-              </TableCell>
+              </TableCell> */}
 
               <TableCell align="center" sx={{ margin: "0px", padding: "15px" }}>
                 <Typography sx={TableStyles.textStyle}>{log.userName}</Typography>

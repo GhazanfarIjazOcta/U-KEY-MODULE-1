@@ -12,10 +12,12 @@ import OperatorsTableContent from "../Table/OperatorsTableContent";
 
 import CustomAlert from "../../UI/CustomAlert";
 import { useState } from "react";
-
+import{ useNavigate} from "react-router-dom";
 
 
 export default function Operators() {
+
+  const navigate = useNavigate();
 
 
   const [alert, setAlert] = useState({
@@ -29,12 +31,14 @@ export default function Operators() {
           };
 
 
-     const  operatorClicked = () =>{
-      setAlert({
-        open: true,
-        severity: "warning",
-        message: "Kept for Future Production",
-      });
+     const  operatorClicked = (method ) =>{
+      // setAlert({
+      //   open: true,
+      //   severity: "warning",
+      //   message: "Kept for Future Production",
+      // });
+      navigate("add-operator");
+
      }
 
 
@@ -84,6 +88,7 @@ export default function Operators() {
           </Box>
           <Button
             variant="contained"
+            
             sx={{
               height: "38px",
               backgroundColor: "#15294E",
@@ -94,10 +99,12 @@ export default function Operators() {
               "&:hover": {
                 backgroundColor: "#15294E",
               },
+              
             }}
-            onClick={()=> operatorClicked()}
+            onClick={()=>  navigate("add-operator")}
           >
-            Operators
+           + Add Operators
+            
           </Button>
         </Box>
 

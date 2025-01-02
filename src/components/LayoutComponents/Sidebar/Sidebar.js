@@ -76,7 +76,7 @@ function Sidebar() {
       route: "companies"
     },
     {
-      text: "Users",
+      text: "Admins",
       icon: UserLogo,
       selectedIcon: SelectedUserLogo,
       route: "user-management"
@@ -116,7 +116,7 @@ function Sidebar() {
     },
 
     {
-      text: "Users",
+      text: "Admins",
       icon: UserLogo,
       selectedIcon: SelectedUserLogo,
       route: "user-management"

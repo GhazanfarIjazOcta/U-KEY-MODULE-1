@@ -34,6 +34,7 @@ export default function Main() {
   console.log("user role in organisation table is  ", user.organizationID);
 
   const [organizations, setOrganizations] = useState([]);
+  const [machines, setMachines] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const navigate = useNavigate();
@@ -42,6 +43,64 @@ export default function Main() {
     active: 0,
     inactive: 0
   });
+
+    const [machineCounts, setMachineCounts] = useState({
+      total: 0,
+      active: 0,
+      inactive: 0,
+    });
+
+    useEffect(() => {
+      const unsubscribeAuth = onAuthStateChanged(auth, (user) => {
+        if (user) {
+          try {
+            const db = getDatabase();
+            const machinesRef = ref(db, "machines");
+  
+            // Use onValue for real-time updates
+            const unsubscribeDB = onValue(machinesRef, (snapshot) => {
+              if (snapshot.exists()) {
+                const machineData = snapshot.val();
+                const machineList = Object.keys(machineData).map((key) => ({
+                  id: key,
+                  ...machineData[key]
+                }));
+  
+                // Counting total, active, and inactive organizations
+                const totalMachines = machineList.length;
+                const activeMachines = machineList.filter(
+                  (machine) => machine.status === "active"
+                ).length;
+                const inactiveMachines = machineList.filter(
+                  (machine) => machine.status === "inactive"
+                ).length;
+  
+                setMachines(machineList);
+                setMachineCounts({
+                  total: totalMachines,
+                  active: activeMachines,
+                  inactive: inactiveMachines
+                });
+              } else {
+                setError("No machines found.");
+              }
+            });
+  
+            // Cleanup the database listener when the component unmounts
+            return () => unsubscribeDB();
+          } catch (err) {
+            setError(err.message);
+          }
+        } else {
+          setError("You must be logged in to view this page.");
+          navigate("/login");
+        }
+        setLoading(false);
+      });
+  
+      // Cleanup the auth listener when the component unmounts
+      return () => unsubscribeAuth();
+    }, [navigate]);
 
   useEffect(() => {
     const unsubscribeAuth = onAuthStateChanged(auth, (user) => {
@@ -136,10 +195,10 @@ export default function Main() {
               <TotalCard
                 icon={"MachinesIcon"}
                 title={"Total Machines"}
-                totalNumber={"06"}
-                activeNumber={"13"}
-                inactiveNumber={"13"}
-                maintenanceNumber={"12"}
+                totalNumber={machineCounts.total}
+                activeNumber={machineCounts.active}
+                inactiveNumber={machineCounts.inactive}
+                maintenanceNumber={0}
               />
             </Grid2>
           </Grid2>

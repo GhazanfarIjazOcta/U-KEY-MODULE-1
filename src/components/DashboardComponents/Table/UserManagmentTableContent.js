@@ -175,6 +175,8 @@ export default function TableContent() {
     setEditStatus(user.status);
     setEditRole(user.role);
     setOpenEditModal(true);
+
+   
   };
 
   const handleCloseEditModal = () => {
@@ -210,6 +212,8 @@ export default function TableContent() {
             const userRef = ref(db, `users/${userId}`);
             await update(userRef, updatedData);
 
+            
+
             // Update the UI by updating the users list in local state
             setUsers((prevUsers) =>
               prevUsers.map((user) =>
@@ -218,6 +222,8 @@ export default function TableContent() {
                   : user
               )
             );
+
+            handleAssignMachineIP(selectedUser.userID);
 
             // alert("User data updated successfully.");
             setAlert({
@@ -235,6 +241,131 @@ export default function TableContent() {
       setError("Failed to update user data.");
     }
   };
+
+  const [availableMachineIPs, setAvailableMachineIPs] = useState([]);
+const [selectedMachineIP, setSelectedMachineIP] = useState("");
+  useEffect(() => {
+    // Fetch machine IPs from Firebase
+    const fetchMachineIPs = async () => {
+      const db = getDatabase();
+      const machinesRef = ref(db, "machines"); // Path to machines node in Firebase
+      onValue(machinesRef, (snapshot) => {
+        const machineData = snapshot.val();
+        if (machineData) {
+          setAvailableMachineIPs(Object.keys(machineData)); // Get machine IPs
+        }
+      });
+    };
+  
+    fetchMachineIPs();
+  }, []);
+
+  const handleAssignMachineIP = (user_id) => {
+    if (!selectedMachineIP) {
+      setAlert({
+        open: true,
+        severity: "error",
+        message: "Please select a valid Machine IP.",
+      });
+      return;
+    }
+  
+    const db = getDatabase(); // Initialize the database
+    const userRef = ref(db, `users/${user_id}`);
+    const machineRef = ref(db, `machines/${selectedMachineIP}`);
+  
+    // Get operator data
+    get(ref(db, `users/${user_id}`)).then((userSnapshot) => {
+      const userData = userSnapshot.val();
+      const tempSerial = userData.tempSerial;
+  
+      // Fetch the machine data
+      get(machineRef).then((machineSnapshot) => {
+        if (machineSnapshot.exists()) {
+          const machineData = machineSnapshot.val();
+  
+        
+          for (const key in machineData.codes) {
+            if (typeof machineData.codes[key] === 'string' && !isNaN(machineData.codes[key])) {
+              if (machineData.codes[key] === tempSerial) {
+                delete machineData.codes[key];  // Deletes the key-value pair where tempSerial matches
+                break;  // Exit loop once deleted
+              }
+            }
+          }
+          
+  
+          // Add tempSerial to foreman
+          if (!machineData.foreman) {
+            machineData.foreman = {};
+          }
+          machineData.foreman[tempSerial] = { userID: user_id };
+  
+          // Update machine and operator in Firebase
+          update(machineRef, {
+            foreman: machineData.foreman,
+            codes: machineData.codes, // Ensure codes remain updated
+          });
+  
+         
+  
+  
+          update(userRef, {
+            serialNumbers: {
+              ...userData.serialNumbers,  // Spread existing serialNumbers if they exist
+              [selectedMachineIP]: {
+                ip: selectedMachineIP,
+                serial: tempSerial,
+              },
+            },
+            machineIP: selectedMachineIP,
+          });
+  
+          console.log(`Machine IP ${selectedMachineIP} assigned to operator ${user_id}`);
+          setUsers((prevforeman) =>
+            prevforeman.map((op) =>
+              op.id === user_id ? { ...op, machineIP: selectedMachineIP } : op
+            )
+          );
+  
+          setAlert({
+            open: true,
+            severity: "success",
+            message: "Machine IP assigned successfully!",
+          });
+        } else {
+          console.error("Machine not found!");
+          setAlert({
+            open: true,
+            severity: "error",
+            message: "Machine not found!",
+          });
+        }
+      }).catch((error) => {
+        console.error("Error retrieving machine:", error);
+        setAlert({
+          open: true,
+          severity: "error",
+          message: "Failed to retrieve machine details.",
+        });
+      });
+    }).catch((error) => {
+      console.error("Error retrieving operator:", error);
+      setAlert({
+        open: true,
+        severity: "error",
+        message: "Failed to retrieve operator details.",
+      });
+    });
+  };
+  
+  
+  
+  
+  
+  
+  
+    // if (loading) return <div>Loading...</div>;
 
  
 
@@ -385,121 +516,7 @@ export default function TableContent() {
             </TableCell>
           </TableRow>
         </TableHead>
-{/* 
-        <TableBody>
-          {users.map((user) => (
-            <TableRow key={user.id}>
-              <TableCell align="start">{user.userID}</TableCell>
-              <TableCell align="start">{user.name}</TableCell>
-              <TableCell align="start">{user.email}</TableCell>
-              <TableCell align="start">{user.phone}</TableCell>
-              <TableCell align="start">{user.role}</TableCell>
 
-              <TableCell align="start">
-                <Box
-                  sx={{
-                    width: "80px",
-                    height: "25px",
-                    backgroundColor:
-                      user.status === "active" ? "#ECFDF3" : "#F2F4F7",
-                    borderRadius: "40%",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    gap: "10px"
-                  }}
-                >
-                  <Box
-                    sx={{
-                      width: 6,
-                      height: 6,
-                      borderRadius: "50%",
-                      backgroundColor:
-                        user.status === "active" ? "#28A745" : "#6C757D"
-                    }}
-                  />
-                  <Typography
-                    fontWeight={500}
-                    fontSize={"14px"}
-                    sx={{
-                      color: user.status === "active" ? "#037847" : "#364254"
-                    }}
-                    fontFamily={"Inter"}
-                  >
-                    {user.status}
-                  </Typography>
-                </Box>
-              </TableCell>
-
-              <TableCell align="start">
-                {user.lastLogin
-                  ? new Date(user.lastLogin).toLocaleString("en-US", {
-                      year: "numeric",
-                      month: "2-digit",
-                      day: "2-digit",
-                      hour: "2-digit",
-                      minute: "2-digit",
-                      second: "2-digit",
-                      hour12: true // For AM/PM format, set to false for 24-hour format
-                    })
-                  : "N/A"}
-              </TableCell>
-              <TableCell align="start">
-                {user.role === "superAdmin" ? (
-                  <Box
-                    sx={{
-                      padding: "4px 8px",
-                      backgroundColor: "#E3F2FD",
-                      color: "#0D47A1",
-                      borderRadius: "8px",
-                      fontWeight: "bold",
-                      fontSize: "14px"
-                    }}
-                    // onClick={handleSuperAdminAction}
-                    style={{ cursor: "pointer" }}
-                  >
-                    Super Admin
-                  </Box>
-                ) : user.userID === CurrentUserID ? (
-                  <Box
-                    sx={{
-                      padding: "4px 8px",
-                      backgroundColor: "#E3F2FD",
-                      color: "#0D47A1",
-                      borderRadius: "8px",
-                      fontWeight: "bold",
-                      fontSize: "14px"
-                    }}
-                    // onClick={handleAdminAction}
-                    style={{ cursor: "pointer" }}
-                  >
-                    You
-                  </Box>
-                ) : (
-                  <Stack direction={"row"} gap={2} justifyContent="start">
-                    <img
-                      src={Edit}
-                      width="24px"
-                      height="24px"
-                      onClick={() => handleEdit(user)}
-                      style={{ cursor: "pointer" }}
-                      alt="Edit"
-                    />
-                    <img
-                      src={Delete}
-                      width="24px"
-                      height="24px"
-                      onClick={() => handleDeleteUser(user.userID, user.users)}
-                      style={{ cursor: "pointer" }}
-                      alt="Delete"
-                    />
-                  </Stack>
-                )}
-               
-              </TableCell>
-            </TableRow>
-          ))}
-        </TableBody> */}
 
 
         <TableBody>
@@ -659,6 +676,23 @@ export default function TableContent() {
                   onChange={(e) => setEditPhone(e.target.value)}
                 />
                 <TextField
+                       select
+                       label="Select Machine IP"
+                       value={selectedMachineIP}
+                       onChange={(e) => setSelectedMachineIP(e.target.value)}
+                       fullWidth
+                       SelectProps={{
+                         native: true,
+                       }}
+                     >
+                       <option value=""></option>
+                       {availableMachineIPs.map((ip, index) => (
+                         <option key={index} value={ip}>
+                           {ip}
+                         </option>
+                       ))}
+                     </TextField>
+                <TextField
                   fullWidth
                   label="Status"
                   margin="normal"
@@ -669,6 +703,7 @@ export default function TableContent() {
                   <MenuItem value="active">Active</MenuItem>
                   <MenuItem value="inactive">Inactive</MenuItem>
                 </TextField>
+
                 <TextField
                   fullWidth
                   label="Role"
@@ -678,7 +713,7 @@ export default function TableContent() {
                   select
                 >
                   <MenuItem value="employee">Emplyee</MenuItem>
-                  <MenuItem value="operator">Operator</MenuItem>
+                  <MenuItem value="admin">Admin</MenuItem>
                 </TextField>
                 <Button
                   variant="contained"

@@ -11,6 +11,7 @@ import Paper from "@mui/material/Paper";
 import { Box, Stack, Switch, Typography } from "@mui/material";
 import { TableStyles } from "../../UI/Styles";
 
+import CheckIcon from '@mui/icons-material/Check';
 import Edit from "../../../assets/Table/Edit.png";
 import Delete from "../../../assets/Table/Delete.png";
 
@@ -130,7 +131,7 @@ export default function OperatorsTableContent() {
         // Update state locally to reflect changes
         setOperators((prevOperators) =>
           prevOperators.map((op) =>
-            op.id === operatorId ? { ...op, status: newStatus } : op
+            op.userID === operatorId ? { ...op, status: newStatus } : op
           )
         );
         setAlert({
@@ -175,6 +176,134 @@ useEffect(() => {
   fetchMachineIPs();
 }, []);
 
+// const handleAssignMachineIP = (operatorId) => {
+//   if (!selectedMachineIP) {
+//     setAlert({
+//       open: true,
+//       severity: "error",
+//       message: "Please select a valid Machine IP.",
+//     });
+//     return;
+//   }
+
+//   const db = getDatabase();
+//   const operatorRef = ref(db, `users/${operatorId}`);
+//   const updatedData = {
+//     machineIP: selectedMachineIP, // Assign selected machine IP
+//   };
+
+//   // Step 1: Check the machine codes and remove the user's tempIp from the codes field
+//   const machineRef = ref(db, `machines/${selectedMachineIP}`);
+  
+//   get(machineRef)
+//     .then((snapshot) => {
+//       if (snapshot.exists()) {
+        
+//         const machineData = snapshot.val();
+//         console.log("Machine found:", snapshot.val());
+
+//         const tempSerial  = operators.find(op => op.userID === operatorId).tempSerial;
+
+//         //================================================================================================
+
+//          // Function to traverse and update machines
+//       const updateMachines = (data) => {
+//         // return data.map(machine => {
+//           // Find and move the reference from codes to operators dynamically
+//           for (const [key, value] of Object.entries(data.codes)) {
+//             if (value === tempSerial) {
+//               data.operators[key] = { userID: operatorId };
+//               delete data.codes[key];
+//             }
+//           }
+//           return data;
+//       //  });
+//       };
+
+//       const updatedMachines = updateMachines(machineData);
+//       // Update machines in Firebase
+//       // updatedMachines.forEach(async (machine) => {
+//       //   const machineRef = db.collection('machines').doc(machine.machineID);
+//       //   await machineRef.update({ operators: machine.operators });
+//       // });
+
+//       // setMachines(updatedMachines);
+
+
+//         //================================================================================================
+
+        
+// // if (machineData.codes[tempSerial]) {  
+// //   // If operators object does not exist, initialize it
+// //   if (!machineData.operators) {
+// //     machineData.operators = {};
+// //   }  
+// //   // Add the tempSerial to operators with the operatorId
+// //   machineData.operators[`-${tempSerial}`] = { userID: operatorId };
+  
+  
+
+// //   // Remove the tempIp from codes
+// //  // Remove the tempSerial from codes, ensuring exact match
+// //  if (machineData.codes[tempSerial] === tempSerial) {
+// //   delete machineData.codes[tempSerial]; // Ensure the tempSerial is deleted only if the value matches
+// // }
+// // }
+
+
+        
+//         // Update machine with the userID and new data
+//         update(machineRef, {
+//           operators: {
+//             ...machineData.codes,  [tempSerial]: {
+//               userID: operatorId
+//             }
+//           },
+//           // codes: machineData.codes
+//         });
+
+//         // Update operator with the selected machine IP
+//         update(operatorRef, updatedData)
+//           .then(() => {
+//             console.log(`Machine IP ${selectedMachineIP} assigned to operator ${operatorId}`);
+//             setOperators((prevOperators) =>
+//               prevOperators.map((op) =>
+//                 op.id === operatorId ? { ...op, machineIP: selectedMachineIP } : op
+//               )
+//             );
+//             setAlert({
+//               open: true,
+//               severity: "success",
+//               message: "Machine IP assigned successfully!",
+//             });
+//           })
+//           .catch((error) => {
+//             console.error("Error assigning Machine IP:", error);
+//             setAlert({
+//               open: true,
+//               severity: "error",
+//               message: "Failed to assign Machine IP.",
+//             });
+//           });
+//       } else {
+//         console.error("Machine not found!");
+//         setAlert({
+//           open: true,
+//           severity: "error",
+//           message: "Machine not found!",
+//         });
+//       }
+//     })
+//     .catch((error) => {
+//       console.error("Error retrieving machine:", error);
+//       setAlert({
+//         open: true,
+//         severity: "error",
+//         message: "Failed to retrieve machine details.",
+//       });
+//     });
+// };
+
 const handleAssignMachineIP = (operatorId) => {
   if (!selectedMachineIP) {
     setAlert({
@@ -185,59 +314,75 @@ const handleAssignMachineIP = (operatorId) => {
     return;
   }
 
-  const db = getDatabase();
+  const db = getDatabase(); // Initialize the database
   const operatorRef = ref(db, `users/${operatorId}`);
-  const updatedData = {
-    machineIP: selectedMachineIP, // Assign selected machine IP
-  };
-
-  // Step 1: Check the machine codes and remove the user's tempIp from the codes field
   const machineRef = ref(db, `machines/${selectedMachineIP}`);
-  
-  get(machineRef)
-    .then((snapshot) => {
-      if (snapshot.exists()) {
-        const machineData = snapshot.val();
-        const tempIp = operators.find(op => op.id === operatorId).tempIp;
 
-        // Check and remove the tempIp from the machine codes
-        if (machineData.codes[tempIp]) {
-          delete machineData.codes[tempIp]; // Remove the tempIp from codes
+  // Get operator data
+  get(ref(db, `users/${operatorId}`)).then((operatorSnapshot) => {
+    const operatorData = operatorSnapshot.val();
+    const tempSerial = operatorData.tempSerial;
+
+    // Fetch the machine data
+    get(machineRef).then((machineSnapshot) => {
+      if (machineSnapshot.exists()) {
+        const machineData = machineSnapshot.val();
+
+        // // Check if tempSerial exists in machine codes and update accordingly
+        // if (machineData.codes && machineData.codes[tempSerial]) {
+        //   // Remove tempSerial from codes
+        //   delete machineData.codes[tempSerial];
+        // }
+        for (const key in machineData.codes) {
+          if (typeof machineData.codes[key] === 'string' && !isNaN(machineData.codes[key])) {
+            if (machineData.codes[key] === tempSerial) {
+              delete machineData.codes[key];  // Deletes the key-value pair where tempSerial matches
+              break;  // Exit loop once deleted
+            }
+          }
         }
         
-        // Update machine with the userID and new data
+
+        // Add tempSerial to operators
+        if (!machineData.operators) {
+          machineData.operators = {};
+        }
+        machineData.operators[tempSerial] = { userID: operatorId };
+
+        // Update machine and operator in Firebase
         update(machineRef, {
-          operators: {
-            [operatorId]: {
-              userID: operatorId
-            }
-          },
-          codes: machineData.codes
+          operators: machineData.operators,
+          codes: machineData.codes, // Ensure codes remain updated
         });
 
-        // Update operator with the selected machine IP
-        update(operatorRef, updatedData)
-          .then(() => {
-            console.log(`Machine IP ${selectedMachineIP} assigned to operator ${operatorId}`);
-            setOperators((prevOperators) =>
-              prevOperators.map((op) =>
-                op.id === operatorId ? { ...op, machineIP: selectedMachineIP } : op
-              )
-            );
-            setAlert({
-              open: true,
-              severity: "success",
-              message: "Machine IP assigned successfully!",
-            });
-          })
-          .catch((error) => {
-            console.error("Error assigning Machine IP:", error);
-            setAlert({
-              open: true,
-              severity: "error",
-              message: "Failed to assign Machine IP.",
-            });
-          });
+        update(operatorRef, {
+          machineIP: selectedMachineIP,
+        });
+
+
+
+        update(operatorRef, {
+          serialNumbers: {
+            ...operatorData.serialNumbers,  // Spread existing serialNumbers if they exist
+            [selectedMachineIP]: {
+              ip: selectedMachineIP,
+              serial: tempSerial,
+            },
+          },
+        });
+
+        console.log(`Machine IP ${selectedMachineIP} assigned to operator ${operatorId}`);
+        setOperators((prevOperators) =>
+          prevOperators.map((op) =>
+            op.id === operatorId ? { ...op, machineIP: selectedMachineIP } : op
+          )
+        );
+
+        setAlert({
+          open: true,
+          severity: "success",
+          message: "Machine IP assigned successfully!",
+        });
       } else {
         console.error("Machine not found!");
         setAlert({
@@ -246,8 +391,7 @@ const handleAssignMachineIP = (operatorId) => {
           message: "Machine not found!",
         });
       }
-    })
-    .catch((error) => {
+    }).catch((error) => {
       console.error("Error retrieving machine:", error);
       setAlert({
         open: true,
@@ -255,9 +399,15 @@ const handleAssignMachineIP = (operatorId) => {
         message: "Failed to retrieve machine details.",
       });
     });
+  }).catch((error) => {
+    console.error("Error retrieving operator:", error);
+    setAlert({
+      open: true,
+      severity: "error",
+      message: "Failed to retrieve operator details.",
+    });
+  });
 };
-
-
 
 
 
@@ -365,7 +515,11 @@ const handleAssignMachineIP = (operatorId) => {
             operators.map((operator) => (
               <TableRow key={operator.id}>
                 <TableCell align="center">{operator.name}</TableCell>
-                <TableCell align="center">{operator.name}</TableCell>
+                <TableCell align="center">
+                  {operator.serialNumbers 
+                    ? Object.keys(operator.serialNumbers).join(", ") 
+                    : "No Machine IPs"}
+                </TableCell>
                 <TableCell align="center">{operator.organizationID}</TableCell>
                 <TableCell align="center">
                   <Box
@@ -414,7 +568,7 @@ const handleAssignMachineIP = (operatorId) => {
                         hour: "2-digit",
                         minute: "2-digit",
                         second: "2-digit",
-                        timeZoneName: "short"
+                        // timeZoneName: "short"
                       })
                     : "N/A"}
                 </TableCell>
@@ -427,7 +581,7 @@ const handleAssignMachineIP = (operatorId) => {
      {/* <Typography sx={TableStyles.headingStyle}>Assign Machine IP</Typography> */}
      <TextField
        select
-       label="Select IP"
+       label="Select Machine IP"
        value={selectedMachineIP}
        onChange={(e) => setSelectedMachineIP(e.target.value)}
        fullWidth
@@ -435,7 +589,7 @@ const handleAssignMachineIP = (operatorId) => {
          native: true,
        }}
      >
-       <option value="">Select Machine IP</option>
+       <option value=""></option>
        {availableMachineIPs.map((ip, index) => (
          <option key={index} value={ip}>
            {ip}
@@ -453,14 +607,21 @@ const handleAssignMachineIP = (operatorId) => {
       onChange={() => handleStatusToggle(operator.userID, operator.status)}
       color="success"
     />
-    <img
+    {/* <img
       src={Edit} // Use your Edit icon
       width="40px"
       height="30px"
       style={{ cursor: "pointer" }}
       alt="Edit"
       onClick={() => handleAssignMachineIP(operator.userID)} // Trigger IP assignment
-    />
+    /> */}
+    <CheckIcon
+  width="40px"
+  height="30px"
+  style={{ cursor: "pointer" }}
+  onClick={() => handleAssignMachineIP(operator.userID)} // Trigger IP assignment
+  alt="Confirm Update"
+/>
   </Stack>
 </TableCell>
 

@@ -222,7 +222,7 @@ function AddUser() {
         </Box> */}
 
         <Box sx={{ marginBottom: 2 }}>
-          <Typography sx={{ marginBottom: 1 }}>Add Serial Numberss</Typography>
+          <Typography sx={{ marginBottom: 1 }}>Assign Serial 5-digit Foreman Code:</Typography>
           {/* <FormControl fullWidth sx={{ marginBottom: 2 }}>
             <InputLabel>Machine IP</InputLabel>
             <Select
@@ -239,7 +239,7 @@ function AddUser() {
             </Select>
           </FormControl> */}
           <TextField
-            label="Serial "
+            label="Serial Code"
             name="tempSerial"
             value={formData.tempSerial}
             onChange={handleChange}

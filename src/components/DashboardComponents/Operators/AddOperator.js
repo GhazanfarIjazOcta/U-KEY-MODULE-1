@@ -226,7 +226,7 @@ function AddOperator() {
         </Box> */}
 
         <Box sx={{ marginBottom: 2 }}>
-          <Typography sx={{ marginBottom: 1 }}>Add Serial Numberss</Typography>
+          <Typography sx={{ marginBottom: 1 }}>Assign Serial 4-digit Operator Code:</Typography>
           {/* <FormControl fullWidth sx={{ marginBottom: 2 }}>
             <InputLabel>Machine IP</InputLabel>
             <Select
@@ -243,7 +243,7 @@ function AddOperator() {
             </Select>
           </FormControl> */}
           <TextField
-            label="Serial "
+            label="Serial Code"
             name="tempSerial"
             value={formData.tempSerial}
             onChange={handleChange}

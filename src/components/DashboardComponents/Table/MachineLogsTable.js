@@ -29,155 +29,176 @@ export default function MachineLogsTable() {
   const CurrentOrganizationID = user.organizationID;
 
   const [logs, setLogs] = useState([]);
+  const [logusersID, setLogUsersID] = useState([]);
+  const [logusers, setLogUsers] = useState([]);
+
+  console.log("users id for logs >>>>>>>>>" , logusersID);
+  console.log("users for logs >>>>>>>>>" , logusers);
+
+
+  const [engineLogs, setEngineLogs] = useState([]);
+const [routeLogs, setRouteLogs] = useState([]);
+
+console.log("engine logs }}}}}}}}}}}}}>>>>>>>>>" , engineLogs);
+console.log("route logs }}}}}}}}}}}}}}>>>>>>>>>" , routeLogs);
+
 
   let allLogs = [];
 
   console.log("here are the engine logs ..,.,.,.,., ", logs);
 
-  // useEffect(() => {
-  //   const loguserRef = ref(rtdb, "users");  
-  
-  //   // Setup real-time listener for the users data
-  //   const unsubscribe = onValue(loguserRef, (snapshot) => {
-  //     if (snapshot.exists()) {
-  //       const logusers = snapshot.val();
-  //       const orgUsers = Object.values(logusers).filter(
-  //         (user) => user.organizationID === CurrentOrganizationID
-  //       );
-  
-       
-  
-  //       orgUsers.forEach((user) => {
-  //         const userID = "M5YXpZpmehgWRmlyYPwzFpbK6qU2"; // Replace with actual logic if needed
-  
-  //         if (userID) {
-  //           const userRef = ref(rtdb, `users/${userID}`);
-            
-  //           get(userRef)
-  //             .then((userSnapshot) => {
-  //               if (userSnapshot.exists()) {
-  //                 const userData = userSnapshot.val();
-  //                 const userName = userData.name; // Ensure correct fetching of userName
-  //                 const machineIP = user.machineID; // Assuming you want machine IP
-  //                 const userPorts = Object.values(userData.serialNumbers).map(
-  //                   (entry) => entry.serial
-  //                 );
-  //                 const organizationID = userData.organizationID;
-  
-  //                 // Collect logs
-  //                 const logs = {
-  //                   userID,
-  //                   userName,
-  //                   machineIP,
-  //                   organizationID,
-  //                   userPorts,
-  //                   engineLogs: userData["Engine Logs"],
-  //                   routeLogs: userData["Route Logs"],
-  //                 };
-  
-  //                 allLogs.push(logs);
-  
-  //                 // Update logs state
-  //                 setLogs([...allLogs]);
-  //               } else {
-  //                 console.warn(`User ID ${userID} does not exist.`);
-  //               }
-  //             })
-  //             .catch((error) => {
-  //               console.error(
-  //                 `Error fetching user data for ${userID}:`,
-  //                 error
-  //               );
-  //             });
-  //         }
-  //       });
-  //     } else {
-  //       console.warn("No users found for the current organization ID.");
-  //     }
-  //   });
-  
-  //   // Cleanup function to stop listening to real-time updates
-  //   return () => unsubscribe();
-  // }, [CurrentOrganizationID]);
+
   
  
 
   useEffect(() => {
-    const machinesRef = ref(rtdb, "machines");  
+    const machinesRef = ref(rtdb, "machines");
+    const usersRef = ref(rtdb, "users");
+  
+    // Function to fetch and filter users with logs
+    const fetchUsersWithLogs = () => {
+      const unsubscribeLoguser = onValue(usersRef, (snapshot) => {
+        if (snapshot.exists()) {
+          const users = snapshot.val();
+  
+          // Filter users by organization ID and ensure they have logs
+          const filteredUsers = Object.values(users).filter(
+            (user) =>
+              user.organizationID === CurrentOrganizationID &&
+              user["Engine Logs"] &&
+              user["Route Logs"]
+          );
 
-    // Setup real-time listener for the machines data
-    const unsubscribe = onValue(machinesRef, (snapshot) => {
-      if (snapshot.exists()) {
-        const machines = snapshot.val();
+          const extractLogs = () => {
+            const engineLogsArray = [];
+            const routeLogsArray = [];
+          
+            filteredUsers.forEach((user) => {
+              // Extracting engine logs
+              if (user["Engine Logs"]) {
+                const engineLogsData = Object.values(user["Engine Logs"]);
+                engineLogsArray.push(...engineLogsData);
+              }
+          
+              // Extracting route logs
+              if (user["Route Logs"]) {
+                const routeLogsData = Object.values(user["Route Logs"]);
+                routeLogsArray.push(...routeLogsData);
+              }
+            });
+          
+            setEngineLogs(engineLogsArray);
+            setRouteLogs(routeLogsArray);
+          };
+          
+          // Call the extractLogs function
+          extractLogs();
 
-        // Filter machines by current organizationID
-        const orgMachines = Object.values(machines).filter(
-          (machine) => machine.organizationID === CurrentOrganizationID
-        );
+          setLogUsers(filteredUsers);
 
-        // const allLogs = [];
+  
+          // Extract user IDs
+          const userIds = filteredUsers.map((user) => user.userID || user.id); // Use `user.id` if `user.userID` is not available
+          setLogUsersID(userIds);
+  
+          console.log("Filtered User IDs:", userIds);
+          console.log("Filtered Users with Logs:", filteredUsers);
+        } else {
+          console.warn("No users found for the current organization ID.");
+        }
+      });
+  
+      return unsubscribeLoguser;
+    };
+  
+    // Function to fetch machines and associate logs with users
+    const fetchMachinesAndLogs = (userIds) => {
+      const unsubscribeMachines = onValue(machinesRef, (snapshot) => {
+        if (snapshot.exists()) {
+          const machines = snapshot.val();
+  
+          // Filter machines by organization ID
+          const orgMachines = Object.values(machines).filter(
+            (machine) => machine.organizationID === CurrentOrganizationID
+          );
+  
+          console.log("Filtered Machines:", orgMachines);
+  
+          const allLogs = [];
+  
+          orgMachines.forEach((machine) => {
+            // Iterate over operators and match with user IDs
+            Object.keys(machine.operators || {}).forEach((operatorKey) => {
+              const userID = machine.operators[operatorKey]?.userID;
+  
+              if (userID) {
+                const userRef = ref(rtdb, `users/${userID}`);
+                console.log("User ID: ____________________________________", userID);
+                get(userRef)
+                  .then((userSnapshot) => {
+                    if (userSnapshot.exists()) {
+                      const userData = userSnapshot.val();
+                    
 
-        orgMachines.forEach((machine) => {
-          // Iterate over operator IDs
-          for (const serial in machine.operators) {
-            // const userID = machine.operators[serial]?.userID;
+                      const logusers = userData["Route Logs"];
+                      
+                      const logs = {
+                        userID,
+                        userName: userData.name || "Unknown",
+                        machineIP: machine.machineID || "Unknown",
+                        organizationID: userData.organizationID,
+                        userPort: Object.values(userData.serialNumbers || {}).map(
+                          (entry) => entry.serial
+                        ),
+                        engineLogs: engineLogs || "No Engine Logs",
+                        routeLogs: routeLogs|| "No Engine Logs",
+                     
+                      };
+  
+                      // Update logs
+                      allLogs.push(logs);
+                      setLogs([...allLogs]);
+                      console.log("Collected Logs:>>>>>>>>>>>>>", logs);
+  
+                      
+                    } else {
+                      console.warn(`User ID ${userID} does not exist in the database.`);
+                    }
+                  })
+                  .catch((error) =>
+                    console.error(`Error fetching user data for ${userID}:`, error)
+                  );
+              }
+            });
+          });
 
-            const userID = "M5YXpZpmehgWRmlyYPwzFpbK6qU2"; // Replace with actual logic if needed
+
+        } else {
+          console.warn("No machines found for the current organization ID.");
+        }
+
+      });
+  
+      return unsubscribeMachines;
+    };
+  
+    // Manage listeners
+    const unsubscribeLoguser = fetchUsersWithLogs();
+  
+    let unsubscribeMachines;
+    if (logusersID.length > 0) {
+      unsubscribeMachines = fetchMachinesAndLogs(logusersID);
+    }
+  
+    // Cleanup listeners
+    return () => {
+      if (unsubscribeLoguser) unsubscribeLoguser();
+      if (unsubscribeMachines) unsubscribeMachines();
+    };
+  }, [CurrentOrganizationID, logusersID]);
   
 
-            if (userID) {
-              // Check if the user exists in the database
-              const userRef = ref(rtdb, `users/${userID}`);
-              get(userRef)
-                .then((userSnapshot) => {
-                  if (userSnapshot.exists()) {
-                    const userData = userSnapshot.val();
-                    const userName = userData.name; // Ensure correct fetching of userName
-                    const machineIP = machine.machineID; // Assuming you want machine IP
-                    const userPort = Object.values(userData.serialNumbers).map(
-                      (entry) => entry.serial
-                    );
-                    const organizationID = userData.organizationID;
-                    console.log(
-                      "we get the user data u hue hue  <><><><> ",
-                      userData
-                    );
-                    // Collect logs
-                    const logs = {
-                      userID,
-                      userName,
-                      machineIP,
-                      organizationID,
-                      userPort,
-                      engineLogs: userData["Engine Logs"],
-                      routeLogs: userData["Route Logs"]
-                    };
-
-                    allLogs.push(logs);
-
-                    // Update logs state
-                    setLogs([...allLogs]);
-                  } else {
-                    console.warn(`User ID ${userID} does not exist.`);
-                  }
-                })
-                .catch((error) => {
-                  console.error(
-                    `Error fetching user data for ${userID}:`,
-                    error
-                  );
-                });
-            }
-          }
-        });
-      } else {
-        console.warn("No machines found for the current organization ID.");
-      }
-    });
-
-    // Cleanup function to stop listening to real-time updates
-    return () => unsubscribe();
-  }, [CurrentOrganizationID]);
+  
 
   const data = logs.map((log) => ({
     userID: log.userID,

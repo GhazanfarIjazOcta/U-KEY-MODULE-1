@@ -98,91 +98,90 @@ export default function DashboardMaintenanceCard() {
     }
 
     return (
-<Modal
-  open={showModal}
-  onClose={() => setShowModal(false)}
-  sx={{
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center"
-  }}
->
-  <Box
-    sx={{
-      backgroundColor: "#fff",
-      borderRadius: "0.75rem",
-      boxShadow: 24,
-      padding: "2rem",
-      width: "45%",
-      maxHeight: "65vh",
-      overflow: "auto"
-    }}
-  >
-    <Typography
-      variant="h6"
-      sx={{ fontFamily: "Poppins", marginBottom: "1rem" }}
-    >
-      Maintenance Details
-    </Typography>
-    <Divider sx={{ marginY: "2rem" }} />
-    <Typography
-      variant="h6"
-      sx={{ fontFamily: "Poppins", marginBottom: "1rem" }}
-    >
-      {activeTab === "history"
-        ? "Completed Maintenance"
-        : "Upcoming Maintenance"}
-    </Typography>
+      <Modal
+        open={showModal}
+        onClose={() => setShowModal(false)}
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center"
+        }}
+      >
+        <Box
+          sx={{
+            backgroundColor: "#fff",
+            borderRadius: "0.75rem",
+            boxShadow: 24,
+            padding: "2rem",
+            width: "45%",
+            maxHeight: "65vh",
+            overflow: "auto"
+          }}
+        >
+          <Typography
+            variant="h6"
+            sx={{ fontFamily: "Poppins", marginBottom: "1rem" }}
+          >
+            Maintenance Details
+          </Typography>
+          <Divider sx={{ marginY: "2rem" }} />
+          <Typography
+            variant="h6"
+            sx={{ fontFamily: "Poppins", marginBottom: "1rem" }}
+          >
+            {activeTab === "history"
+              ? "Completed Maintenance"
+              : "Upcoming Maintenance"}
+          </Typography>
 
-    {modalUseData.length > 0 ? (
-      <Grid container spacing={2}>
-        {modalUseData.map((maintenance, index) => (
-          <Grid item xs={12} md={6} key={index}>
-            <Box sx={{ marginBottom: "1.5rem" }}>
-              <Typography
-                sx={{
-                  fontFamily: "Poppins",
-                  fontSize: "1rem",
-                  color: "#202020",
-                  fontWeight: 600,
-                  marginBottom: "0.5rem"
-                }}
-              >
-                {maintenance.maintenanceName}
-              </Typography>
-              <Typography
-                sx={{
-                  fontFamily: "Inter",
-                  fontSize: "0.9rem",
-                  color: "#7E939A",
-                  marginBottom: "0.5rem"
-                }}
-              >
-                Machine ID: {maintenance.machineID}
-              </Typography>
-              <Typography
-                sx={{
-                  fontFamily: "Inter",
-                  fontSize: "0.9rem",
-                  color: "#7E939A"
-                }}
-              >
-                Next Maintenance: {maintenance.nextMaintenance}
-              </Typography>
-            </Box>
-          </Grid>
-        ))}
-      </Grid>
-    ) : (
-      <Typography sx={{ fontFamily: "Inter", color: "#7E939A" }}>
-        No upcoming maintenance.
-      </Typography>
-    )}
+          {modalUseData.length > 0 ? (
+            <Grid container spacing={2}>
+              {modalUseData.map((maintenance, index) => (
+                <Grid item xs={12} md={6} key={index}>
+                  <Box sx={{ marginBottom: "1.5rem" }}>
+                    <Typography
+                      sx={{
+                        fontFamily: "Poppins",
+                        fontSize: "1rem",
+                        color: "#202020",
+                        fontWeight: 600,
+                        marginBottom: "0.5rem"
+                      }}
+                    >
+                      {maintenance.maintenanceName}
+                    </Typography>
+                    <Typography
+                      sx={{
+                        fontFamily: "Inter",
+                        fontSize: "0.9rem",
+                        color: "#7E939A",
+                        marginBottom: "0.5rem"
+                      }}
+                    >
+                      Machine ID: {maintenance.machineID}
+                    </Typography>
+                    <Typography
+                      sx={{
+                        fontFamily: "Inter",
+                        fontSize: "0.9rem",
+                        color: "#7E939A"
+                      }}
+                    >
+                      Next Maintenance: {maintenance.nextMaintenance}
+                    </Typography>
+                  </Box>
+                </Grid>
+              ))}
+            </Grid>
+          ) : (
+            <Typography sx={{ fontFamily: "Inter", color: "#7E939A" }}>
+              No upcoming maintenance.
+            </Typography>
+          )}
 
-    <Divider sx={{ marginY: "2rem" }} />
-  </Box>
-</Modal>
-
+          <Divider sx={{ marginY: "2rem" }} />
+        </Box>
+      </Modal>
     );
   };
 

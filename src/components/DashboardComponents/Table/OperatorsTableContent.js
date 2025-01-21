@@ -328,11 +328,7 @@ const handleAssignMachineIP = (operatorId) => {
       if (machineSnapshot.exists()) {
         const machineData = machineSnapshot.val();
 
-        // // Check if tempSerial exists in machine codes and update accordingly
-        // if (machineData.codes && machineData.codes[tempSerial]) {
-        //   // Remove tempSerial from codes
-        //   delete machineData.codes[tempSerial];
-        // }
+      
         for (const key in machineData.codes) {
           if (typeof machineData.codes[key] === 'string' && !isNaN(machineData.codes[key])) {
             if (machineData.codes[key] === tempSerial) {

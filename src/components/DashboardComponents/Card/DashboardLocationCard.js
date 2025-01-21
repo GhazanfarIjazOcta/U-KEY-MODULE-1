@@ -3,14 +3,11 @@ import Box from "@mui/material/Box";
 import Card from "@mui/material/Card";
 import { Button, Divider, Grid, Stack, Typography } from "@mui/material";
 import JobSiteIcon from "../../../assets/Sidebar/JobSitesIconSelected.svg";
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import { useNavigate } from "react-router-dom";
 
-
-export default function DashboardLocationCard({ }) {
-
+export default function DashboardLocationCard({}) {
   const navigate = useNavigate();
-
 
   return (
     <Box sx={{ mt: { xs: 1, md: 0 } }}>
@@ -19,41 +16,110 @@ export default function DashboardLocationCard({ }) {
         sx={{
           border: "none",
           boxShadow: "none",
-          height: "420px",
+          height: "420px"
         }}
       >
         <>
-
-          <Box sx={{ display: "flex", gap: "1.5rem", alignItems: "start", justifyContent: "space-between", marginBottom: "0rem", padding: "1rem 2rem 0.5rem 1rem", flexFlow: "wrap" }}>
-            <Box sx={{ display: "flex", gap: "1.5rem", alignItems: "start", }}>
-              <Box sx={{ width: 44, height: 40, background: "#FEF2E5", borderRadius: "0.7rem", display: "flex", justifyContent: "center", alignItems: "center" }}> <img src={JobSiteIcon} /> </Box>
+          <Box
+            sx={{
+              display: "flex",
+              gap: "1.5rem",
+              alignItems: "start",
+              justifyContent: "space-between",
+              marginBottom: "0rem",
+              padding: "1rem 2rem 0.5rem 1rem",
+              flexFlow: "wrap"
+            }}
+          >
+            <Box sx={{ display: "flex", gap: "1.5rem", alignItems: "start" }}>
+              <Box
+                sx={{
+                  width: 44,
+                  height: 40,
+                  background: "#FEF2E5",
+                  borderRadius: "0.7rem",
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center"
+                }}
+              >
+                {" "}
+                <img src={JobSiteIcon} />{" "}
+              </Box>
               <Box pt={"0.4rem"}>
-                <Typography sx={{ fontFamily: "Poppins", fontSize: "0.8rem", color: "#909097" }}>
+                <Typography
+                  sx={{
+                    fontFamily: "Poppins",
+                    fontSize: "0.8rem",
+                    color: "#909097"
+                  }}
+                >
                   Job sites overview
                 </Typography>
-                <Typography sx={{ fontFamily: "Poppins", fontSize: "2rem", color: "#040219", fontWeight: 600 }}>
+                <Typography
+                  sx={{
+                    fontFamily: "Poppins",
+                    fontSize: "2rem",
+                    color: "#040219",
+                    fontWeight: 600
+                  }}
+                >
                   06
                 </Typography>
               </Box>
-
             </Box>
 
-            <Box sx={{ display: "flex", gap: "2rem", flexFlow: "wrap", alignItems: "center" }}>
-              <Typography sx={{ color: "#68676E", fontFamily: "Poppins", fontSize: "0.8rem" }}>
+            <Box
+              sx={{
+                display: "flex",
+                gap: "2rem",
+                flexFlow: "wrap",
+                alignItems: "center"
+              }}
+            >
+              <Typography
+                sx={{
+                  color: "#68676E",
+                  fontFamily: "Poppins",
+                  fontSize: "0.8rem"
+                }}
+              >
                 Active
               </Typography>
-              <Typography sx={{ fontFamily: "Poppins", fontSize: "1.5rem", color: "#040219", fontWeight: 500 }}>
+              <Typography
+                sx={{
+                  fontFamily: "Poppins",
+                  fontSize: "1.5rem",
+                  color: "#040219",
+                  fontWeight: 500
+                }}
+              >
                 13
               </Typography>
-              <Divider orientation="vertical" sx={{ border: "1px solid #E2E2E2", height: "2rem" }} />
-              <Typography sx={{ color: "#68676E", fontFamily: "Poppins", fontSize: "0.8rem" }}>
+              <Divider
+                orientation="vertical"
+                sx={{ border: "1px solid #E2E2E2", height: "2rem" }}
+              />
+              <Typography
+                sx={{
+                  color: "#68676E",
+                  fontFamily: "Poppins",
+                  fontSize: "0.8rem"
+                }}
+              >
                 Inactive
               </Typography>
-              <Typography sx={{ fontFamily: "Poppins", fontSize: "1.5rem", color: "#040219", fontWeight: 500 }}>
+              <Typography
+                sx={{
+                  fontFamily: "Poppins",
+                  fontSize: "1.5rem",
+                  color: "#040219",
+                  fontWeight: 500
+                }}
+              >
                 13
               </Typography>
             </Box>
-
 
             <Button
               variant="text"
@@ -65,13 +131,15 @@ export default function DashboardLocationCard({ }) {
                 display: "flex",
                 alignItems: "center",
                 "&:hover": {
-                  backgroundColor: "",
-                },
+                  backgroundColor: ""
+                }
               }}
-              onClick={()=> navigate("job-sites")}
+              onClick={() => navigate("job-sites")}
             >
               sites
-              <ExpandMoreIcon sx={{ fontSize: "1.5rem", marginLeft: "0.3rem" }} />
+              <ExpandMoreIcon
+                sx={{ fontSize: "1.5rem", marginLeft: "0.3rem" }}
+              />
             </Button>
           </Box>
 

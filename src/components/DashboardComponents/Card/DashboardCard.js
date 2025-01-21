@@ -12,13 +12,13 @@ export default function DashboardCard({
   secText,
   leftContent,
   middleContent,
-  rightContent,
+  rightContent
 }) {
   return (
     <Paper
       sx={{
         padding: "0.6em 1rem",
-        minWidth: "12rem",
+        minWidth: "12rem"
       }}
     >
       <Stack
@@ -36,7 +36,7 @@ export default function DashboardCard({
               display: "flex",
               justifyContent: "center",
               alignItems: "center",
-              borderRadius: "2px",
+              borderRadius: "2px"
             }}
           >
             <Box width="1.25rem" height="1.375rem">
@@ -48,7 +48,7 @@ export default function DashboardCard({
               fontSize: "0.8rem",
               color: "#5A607F",
               fontWeight: 400,
-              fontFamily: "Inter, sans-serif",
+              fontFamily: "Inter, sans-serif"
             }}
           >
             {text && text}
@@ -60,7 +60,7 @@ export default function DashboardCard({
             color: "#45464E",
             fontWeight: 500,
             fontFamily: "Poppins, sans-serif",
-            mx: "0.2em",
+            mx: "0.2em"
           }}
         >
           {secText ? secText : "09"}
@@ -71,7 +71,7 @@ export default function DashboardCard({
               fontSize: "0.7rem",
               color: "#AEAEAE",
               fontWeight: 400,
-              fontFamily: "Inter, sans-serif",
+              fontFamily: "Inter, sans-serif"
             }}
           >
             Today
@@ -92,7 +92,7 @@ export default function DashboardCard({
               fontSize: "0.8rem",
               color: "#8B8D97",
               fontWeight: 400,
-              fontFamily: "Inter, sans-serif",
+              fontFamily: "Inter, sans-serif"
             }}
           >
             {leftContent && leftContent.text}
@@ -102,7 +102,7 @@ export default function DashboardCard({
               fontSize: "1.1rem",
               color: "#45464E",
               fontWeight: 500,
-              fontFamily: "Poppins, sans-serif",
+              fontFamily: "Poppins, sans-serif"
             }}
           >
             {leftContent && leftContent.value}
@@ -120,7 +120,7 @@ export default function DashboardCard({
               fontSize: "0.8rem",
               color: "#8B8D97",
               fontWeight: 400,
-              fontFamily: "Inter, sans-serif",
+              fontFamily: "Inter, sans-serif"
             }}
           >
             {middleContent && middleContent.text}
@@ -130,7 +130,7 @@ export default function DashboardCard({
               fontSize: "1.1rem",
               color: "#45464E",
               fontWeight: 500,
-              fontFamily: "Poppins, sans-serif",
+              fontFamily: "Poppins, sans-serif"
             }}
           >
             {middleContent && middleContent.value}
@@ -148,7 +148,7 @@ export default function DashboardCard({
               fontSize: "0.8rem",
               color: "#8B8D97",
               fontWeight: 400,
-              fontFamily: "Inter, sans-serif",
+              fontFamily: "Inter, sans-serif"
             }}
           >
             {rightContent && rightContent.text}
@@ -158,7 +158,7 @@ export default function DashboardCard({
               fontSize: "1.1rem",
               color: "#45464E",
               fontWeight: 500,
-              fontFamily: "Poppins, sans-serif",
+              fontFamily: "Poppins, sans-serif"
             }}
           >
             {rightContent && rightContent.value}

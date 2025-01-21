@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import {
   Box,
@@ -11,9 +10,9 @@ import {
   FormControl,
   InputLabel,
   Select,
-  MenuItem
+  MenuItem,
 } from "@mui/material";
-import { auth, rtdb, ref, set, get } from "../../../firebase";
+import { auth, rtdb, ref, set, get, update } from "../../../firebase";
 import { useUser } from "../../../Context/UserContext";
 import axios from "axios";
 import DeleteIcon from "@mui/icons-material/Delete"; // For removing images
@@ -32,7 +31,7 @@ function AddMachine() {
     logoutTime: "",
     organizationID: "",
     recentUsers: [],
-    lastLocation: ""
+    lastLocation: "",
   });
 
   const { user } = useUser();
@@ -42,7 +41,7 @@ function AddMachine() {
   const [alert, setAlert] = useState({
     open: false,
     severity: "success",
-    message: ""
+    message: "",
   });
 
   const handleAlertClose = () => {
@@ -78,9 +77,6 @@ function AddMachine() {
           machineID: formData.machineID,
           organizationID: CurrentOrganizationID,
           image: imageUrls, // Store image URLs under image1, image2, and image3
-          // defaultCode: formData.defaultCode,
-          // assignedTo: formData.assignedTo || " ",
-
           maintenance: formData.maintenance.length
             ? formData.maintenance
             : [
@@ -90,10 +86,9 @@ function AddMachine() {
                   nextMaintenance: "2024-10-01",
                   recentMaintenance: "2024-08-01",
                   maintenanceDetails: "Oil change and filter replacement",
-                  status: "Pending"
-                }
+                  status: "Pending",
+                },
               ],
-
           status: formData.status,
           loginTime: "",
           logoutTime: "",
@@ -104,20 +99,33 @@ function AddMachine() {
           // Newly added fields
           operators: [], // Array to store multiple operators, empty by default
           foreman: [], // Array to store multiple foremen, empty by default
-          code: [] // Array to store multiple codes, empty by default
+          code: [], // Array to store multiple codes, empty by default
         };
 
         // Instead of storing under organization path, store directly under machines
         const newMachineRef = ref(rtdb, `machines/${newMachine.machineID}`);
         await set(newMachineRef, newMachine);
 
-        console.log("New Machine added successfully!");
-        // alert("Machine added successfully");
+        // Step 2: Update the organization node with the machine IP
+        const organizationRef = ref(rtdb, `organizations/${CurrentOrganizationID}`);
+        const organizationSnapshot = await get(organizationRef);
 
+        if (organizationSnapshot.exists()) {
+          const organizationData = organizationSnapshot.val();
+          const machineIps = organizationData.machineIps || [];
+
+          // Add the new machine IP to the organization's machineIps array
+          if (!machineIps.includes(newMachine.machineID)) {
+            machineIps.push(newMachine.machineID);
+            await update(organizationRef, { machineIps });
+          }
+        }
+
+        console.log("New Machine added successfully!");
         setAlert({
           open: true,
           severity: "success",
-          message: "Machine added successfully!"
+          message: "Machine added successfully!",
         });
 
         setFormData({
@@ -125,35 +133,30 @@ function AddMachine() {
           images: [], // Clear images after submission
           defaultCode: "machineip",
           assignedTo: "1234",
-          // maintenance: [],
           status: "inactive",
           loginTime: "NA",
           logoutTime: "NA",
           organizationID: "",
           recentUsers: [],
-          lastLocation: ""
+          lastLocation: "",
         });
       } catch (error) {
         console.error(
           "Error uploading images or adding machine:",
           error.message
         );
-        // alert("Error: " + error.message);
-
         setAlert({
           open: true,
-          severity: "error", // You can adjust the severity depending on the context
-          message: "Error" + error.message // Use the dynamic error message
+          severity: "error",
+          message: "Error: " + error.message,
         });
       }
     } catch (error) {
       console.error("Error adding machine:", error.message);
-      // alert(`Failed to add machine: ${error.message}`);
-
       setAlert({
         open: true,
-        severity: "error", // You can adjust the severity depending on the context
-        message: "Failed to add machine:" + error.message // Use the dynamic error message
+        severity: "error",
+        message: "Failed to add machine: " + error.message,
       });
     }
   };
@@ -161,36 +164,33 @@ function AddMachine() {
   const handleImageUpload = (e) => {
     const files = e.target.files;
     if (!files || files.length === 0) {
-      // alert("Please select at least one image.");
       setAlert({
         open: true,
-        severity: "warning", // You can adjust the severity depending on the context
-        message: "Please select at least one image." // Use the dynamic error message
+        severity: "warning",
+        message: "Please select at least one image.",
       });
-
       return;
     }
 
     const currentImages = formData.images || [];
 
     if (currentImages.length + files.length > 3) {
-      // alert("You can only upload up to 3 images.");
       setAlert({
         open: true,
-        severity: "warning", // You can adjust the severity depending on the context
-        message: "You can only upload up to 3 images." // Use the dynamic error message
+        severity: "warning",
+        message: "You can only upload up to 3 images.",
       });
       return;
     }
 
     const newImages = Array.from(files).map((file) => ({
       file,
-      preview: URL.createObjectURL(file)
+      preview: URL.createObjectURL(file),
     }));
 
     setFormData((prevData) => ({
       ...prevData,
-      images: [...currentImages, ...newImages]
+      images: [...currentImages, ...newImages],
     }));
   };
 
@@ -287,6 +287,297 @@ function AddMachine() {
 export default AddMachine;
 
 
+// import React, { useState } from "react";
+// import {
+//   Box,
+//   Button,
+//   TextField,
+//   Typography,
+//   Paper,
+//   Stack,
+//   IconButton,
+//   FormControl,
+//   InputLabel,
+//   Select,
+//   MenuItem
+// } from "@mui/material";
+// import { auth, rtdb, ref, set, get } from "../../../firebase";
+// import { useUser } from "../../../Context/UserContext";
+// import axios from "axios";
+// import DeleteIcon from "@mui/icons-material/Delete"; // For removing images
+
+// import CustomAlert from "../../UI/CustomAlert";
+
+// function AddMachine() {
+//   const [formData, setFormData] = useState({
+//     machineID: "",
+//     images: [], // Array to hold image files temporarily
+//     defaultCode: "",
+//     assignedTo: " ",
+//     maintenance: [],
+//     status: "inactive",
+//     loginTime: "",
+//     logoutTime: "",
+//     organizationID: "",
+//     recentUsers: [],
+//     lastLocation: ""
+//   });
+
+//   const { user } = useUser();
+//   const CurrentUserID = user.uid;
+//   const CurrentOrganizationID = user.organizationID;
+
+//   const [alert, setAlert] = useState({
+//     open: false,
+//     severity: "success",
+//     message: ""
+//   });
+
+//   const handleAlertClose = () => {
+//     setAlert({ ...alert, open: false });
+//   };
+
+//   const handleChange = (e) => {
+//     setFormData({ ...formData, [e.target.name]: e.target.value });
+//   };
+
+//   const handleAddMachine = async () => {
+//     console.log("Current User UID:", auth.currentUser.uid);
+//     try {
+//       const loggedInAdminUid = auth.currentUser?.uid;
+
+//       try {
+//         // Upload images to Cloudinary and get the URLs
+//         const imageUrls = {};
+//         for (let i = 0; i < formData.images.length; i++) {
+//           const formDataCloud = new FormData();
+//           formDataCloud.append("file", formData.images[i].file);
+//           formDataCloud.append("upload_preset", "U-KEY-Images");
+
+//           const response = await axios.post(
+//             `https://api.cloudinary.com/v1_1/dbhnt7uqd/image/upload`,
+//             formDataCloud
+//           );
+//           // Assigning each image URL to corresponding image fields (image1, image2, image3)
+//           imageUrls[`image${i + 1}`] = response.data.secure_url;
+//         }
+
+//         const newMachine = {
+//           machineID: formData.machineID,
+//           organizationID: CurrentOrganizationID,
+//           image: imageUrls, // Store image URLs under image1, image2, and image3
+//           // defaultCode: formData.defaultCode,
+//           // assignedTo: formData.assignedTo || " ",
+
+//           maintenance: formData.maintenance.length
+//             ? formData.maintenance
+//             : [
+//                 {
+//                   machineID: formData.machineID,
+//                   maintenanceName: "Tuning",
+//                   nextMaintenance: "2024-10-01",
+//                   recentMaintenance: "2024-08-01",
+//                   maintenanceDetails: "Oil change and filter replacement",
+//                   status: "Pending"
+//                 }
+//               ],
+
+//           status: formData.status,
+//           loginTime: "",
+//           logoutTime: "",
+//           recentUsers: formData.recentUsers.length ? formData.recentUsers : [],
+//           lastLocation: formData.lastLocation || "",
+//           connected: "false",
+//           timestamp: "NA",
+//           // Newly added fields
+//           operators: [], // Array to store multiple operators, empty by default
+//           foreman: [], // Array to store multiple foremen, empty by default
+//           code: [] // Array to store multiple codes, empty by default
+//         };
+
+//         // Instead of storing under organization path, store directly under machines
+//         const newMachineRef = ref(rtdb, `machines/${newMachine.machineID}`);
+//         await set(newMachineRef, newMachine);
+
+//         console.log("New Machine added successfully!");
+//         // alert("Machine added successfully");
+
+//         setAlert({
+//           open: true,
+//           severity: "success",
+//           message: "Machine added successfully!"
+//         });
+
+//         setFormData({
+//           machineID: "",
+//           images: [], // Clear images after submission
+//           defaultCode: "machineip",
+//           assignedTo: "1234",
+//           // maintenance: [],
+//           status: "inactive",
+//           loginTime: "NA",
+//           logoutTime: "NA",
+//           organizationID: "",
+//           recentUsers: [],
+//           lastLocation: ""
+//         });
+//       } catch (error) {
+//         console.error(
+//           "Error uploading images or adding machine:",
+//           error.message
+//         );
+//         // alert("Error: " + error.message);
+
+//         setAlert({
+//           open: true,
+//           severity: "error", // You can adjust the severity depending on the context
+//           message: "Error" + error.message // Use the dynamic error message
+//         });
+//       }
+//     } catch (error) {
+//       console.error("Error adding machine:", error.message);
+//       // alert(`Failed to add machine: ${error.message}`);
+
+//       setAlert({
+//         open: true,
+//         severity: "error", // You can adjust the severity depending on the context
+//         message: "Failed to add machine:" + error.message // Use the dynamic error message
+//       });
+//     }
+//   };
+
+//   const handleImageUpload = (e) => {
+//     const files = e.target.files;
+//     if (!files || files.length === 0) {
+//       // alert("Please select at least one image.");
+//       setAlert({
+//         open: true,
+//         severity: "warning", // You can adjust the severity depending on the context
+//         message: "Please select at least one image." // Use the dynamic error message
+//       });
+
+//       return;
+//     }
+
+//     const currentImages = formData.images || [];
+
+//     if (currentImages.length + files.length > 3) {
+//       // alert("You can only upload up to 3 images.");
+//       setAlert({
+//         open: true,
+//         severity: "warning", // You can adjust the severity depending on the context
+//         message: "You can only upload up to 3 images." // Use the dynamic error message
+//       });
+//       return;
+//     }
+
+//     const newImages = Array.from(files).map((file) => ({
+//       file,
+//       preview: URL.createObjectURL(file)
+//     }));
+
+//     setFormData((prevData) => ({
+//       ...prevData,
+//       images: [...currentImages, ...newImages]
+//     }));
+//   };
+
+//   const handleRemoveImage = (index) => {
+//     const updatedImages = [...formData.images];
+//     updatedImages.splice(index, 1);
+//     setFormData({ ...formData, images: updatedImages });
+//   };
+
+//   return (
+//     <Paper sx={{ padding: 3 }}>
+//       <Box>
+//         {["machineID", "lastLocation", "status"].map((field) => (
+//           <Box key={field} sx={{ marginBottom: 2 }}>
+//             <Typography sx={{ mb: 2 }}>
+//               {field.charAt(0).toUpperCase() + field.slice(1)}
+//             </Typography>
+//             {field === "status" ? (
+//               <FormControl fullWidth>
+//                 <InputLabel>Status</InputLabel>
+//                 <Select
+//                   name={field}
+//                   value={formData[field]}
+//                   onChange={handleChange}
+//                 >
+//                   <MenuItem value="active">Active</MenuItem>
+//                   <MenuItem value="inactive">Inactive</MenuItem>
+//                 </Select>
+//               </FormControl>
+//             ) : (
+//               <TextField
+//                 name={field}
+//                 type={field === "password" ? "password" : "text"}
+//                 value={formData[field]}
+//                 onChange={handleChange}
+//                 fullWidth
+//               />
+//             )}
+//           </Box>
+//         ))}
+
+//         {/* Image Upload Section */}
+//         <Box sx={{ marginBottom: 2 }}>
+//           <Typography>Upload Images (Max 3)</Typography>
+//           <input
+//             type="file"
+//             multiple
+//             onChange={handleImageUpload}
+//             accept="image/*"
+//           />
+//           <Box display="flex" mt={2}>
+//             {formData.images.map((img, index) => (
+//               <Box key={index} sx={{ position: "relative", marginRight: 2 }}>
+//                 <img
+//                   src={img.preview}
+//                   alt={`preview-${index}`}
+//                   width={80}
+//                   height={80}
+//                   style={{ borderRadius: 8 }}
+//                 />
+//                 <IconButton
+//                   size="small"
+//                   onClick={() => handleRemoveImage(index)}
+//                   sx={{ position: "absolute", top: 0, right: 0 }}
+//                 >
+//                   <DeleteIcon />
+//                 </IconButton>
+//               </Box>
+//             ))}
+//           </Box>
+//         </Box>
+//       </Box>
+
+//       <Stack direction="row" justifyContent="flex-end">
+//         <Button
+//           sx={{ backgroundColor: "#15294E" }}
+//           variant="contained"
+//           onClick={handleAddMachine}
+//         >
+//           Add Machine
+//         </Button>
+//       </Stack>
+
+//       <CustomAlert
+//         open={alert.open}
+//         onClose={handleAlertClose}
+//         severity={alert.severity}
+//         message={alert.message}
+//       />
+//     </Paper>
+//   );
+// }
+
+// export default AddMachine;
+
+
+
+
+////// VERY VERY OLD
 
 // import React, { useState, useEffect } from "react";
 // import {

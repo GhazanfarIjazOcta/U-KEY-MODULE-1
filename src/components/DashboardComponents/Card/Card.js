@@ -10,16 +10,18 @@ export default function OutlinedCard({
   icon,
   secText,
   consumptionColor,
-  costColor,
+  costColor
 }) {
   return (
-    <Paper sx={{
-      height: "100%",
-      // border: "1px ",  // Simple border
-      // boxShadow: "0 2px 4px rgba(0, 0, 0, 0.2)",  // Light shadow
-      // borderBottom: "2px solid rgba(0, 0, 0, 0.3)",  // Slightly darker bottom border
-      // borderRadius: "4px",  // Optional: small rounding of corners
-    }}>
+    <Paper
+      sx={{
+        height: "100%"
+        // border: "1px ",  // Simple border
+        // boxShadow: "0 2px 4px rgba(0, 0, 0, 0.2)",  // Light shadow
+        // borderBottom: "2px solid rgba(0, 0, 0, 0.3)",  // Slightly darker bottom border
+        // borderRadius: "4px",  // Optional: small rounding of corners
+      }}
+    >
       <Card
         variant="outlined"
         sx={{
@@ -27,7 +29,7 @@ export default function OutlinedCard({
           boxShadow: "none",
           // width: "100%",
 
-          height: "100%",
+          height: "100%"
           // backgroundColor: "red",
         }}
       >
@@ -40,7 +42,7 @@ export default function OutlinedCard({
                     sx={{
                       width: "12px",
                       height: "12px",
-                      backgroundColor: `${consumptionColor}`,
+                      backgroundColor: `${consumptionColor}`
                     }}
                   ></Box>
                 )}
@@ -49,7 +51,7 @@ export default function OutlinedCard({
                     sx={{
                       width: "12px",
                       height: "12px",
-                      backgroundColor: `${costColor}`,
+                      backgroundColor: `${costColor}`
                     }}
                   ></Box>
                 )}
@@ -58,7 +60,7 @@ export default function OutlinedCard({
                     fontSize: "16px",
                     color: "#5A607F",
                     fontWeight: 400,
-                    fontFamily: "Inter, sans-serif",
+                    fontFamily: "Inter, sans-serif"
                   }}
                 >
                   {text}
@@ -70,7 +72,7 @@ export default function OutlinedCard({
                     fontSize: "12px",
                     color: "#AEAEAE",
                     fontWeight: 400,
-                    fontFamily: "Inter, sans-serif",
+                    fontFamily: "Inter, sans-serif"
                   }}
                 >
                   Today
@@ -91,7 +93,7 @@ export default function OutlinedCard({
                   display: "flex",
                   justifyContent: "center",
                   alignItems: "center",
-                  borderRadius: "2px",
+                  borderRadius: "2px"
                 }}
               >
                 <img src={icon} height={"16px"} width={"16px"} />
@@ -101,7 +103,7 @@ export default function OutlinedCard({
                   fontSize: "64px",
                   color: "#45464E",
                   fontWeight: 500,
-                  fontFamily: "Poppins, sans-serif",
+                  fontFamily: "Poppins, sans-serif"
                 }}
               >
                 {secText ? secText : "0"}

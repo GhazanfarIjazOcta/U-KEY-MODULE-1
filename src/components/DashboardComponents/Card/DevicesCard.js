@@ -10,7 +10,7 @@ export default function DevicesCard({
   leftContent,
   rightContent,
   devicesText,
-  devicesValue,
+  devicesValue
 }) {
   return (
     <Paper
@@ -18,7 +18,7 @@ export default function DevicesCard({
         paddingX: "1em",
         minWidth: "12em",
         paddingTop: "1em",
-        paddingBottom: "0.4em",
+        paddingBottom: "0.4em"
       }}
     >
       <Stack direction={"row"} alignItems={"start"} pb={"0.5em"} gap={"1em"}>
@@ -30,7 +30,7 @@ export default function DevicesCard({
             display: "flex",
             justifyContent: "center",
             alignItems: "center",
-            borderRadius: "2px",
+            borderRadius: "2px"
           }}
         >
           <Box width="1.25rem" height="1.375rem">
@@ -43,7 +43,7 @@ export default function DevicesCard({
               fontSize: "1rem",
               color: "#5A607F",
               fontWeight: 400,
-              fontFamily: "Inter, sans-serif",
+              fontFamily: "Inter, sans-serif"
             }}
           >
             {devicesText}
@@ -53,7 +53,7 @@ export default function DevicesCard({
               fontSize: "1.5rem",
               color: "#2A3547",
               fontWeight: 600,
-              fontFamily: "Plus Jakarta Sans, sans-serif",
+              fontFamily: "Plus Jakarta Sans, sans-serif"
             }}
           >
             {devicesValue}
@@ -80,7 +80,7 @@ export default function DevicesCard({
                 fontSize: "0.8rem",
                 color: "#8B8D97",
                 fontWeight: 400,
-                fontFamily: "Inter, sans-serif",
+                fontFamily: "Inter, sans-serif"
               }}
             >
               {leftContent && leftContent.text}
@@ -90,7 +90,7 @@ export default function DevicesCard({
                 fontSize: "1.1rem",
                 color: "#45464E",
                 fontWeight: 500,
-                fontFamily: "Poppins, sans-serif",
+                fontFamily: "Poppins, sans-serif"
               }}
             >
               {leftContent && leftContent.value}
@@ -109,7 +109,7 @@ export default function DevicesCard({
                 fontSize: "0.8rem",
                 color: "#8B8D97",
                 fontWeight: 400,
-                fontFamily: "Inter, sans-serif",
+                fontFamily: "Inter, sans-serif"
               }}
             >
               {rightContent && rightContent.text}
@@ -119,7 +119,7 @@ export default function DevicesCard({
                 fontSize: "1.1rem",
                 color: "#45464E",
                 fontWeight: 500,
-                fontFamily: "Poppins, sans-serif",
+                fontFamily: "Poppins, sans-serif"
               }}
             >
               {rightContent && rightContent.value}

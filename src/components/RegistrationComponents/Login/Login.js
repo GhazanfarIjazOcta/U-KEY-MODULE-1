@@ -248,7 +248,6 @@ const Login = () => {
             onChange={(e) => setEmail(e.target.value)}
           />
         </Box>
-
         <Box
           sx={{
             width: { xs: "80%", sm: "60%" },

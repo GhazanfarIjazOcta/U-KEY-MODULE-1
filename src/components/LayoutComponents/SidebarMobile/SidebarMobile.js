@@ -42,51 +42,6 @@ function Sidebar2({ onClose }) {
   const { user, updateUserData } = useUser(); // Destructure user data from context
   console.log("user role is ", user.role);
 
-  const listItems = [
-    {
-      text: "Dashboard",
-      icon: DashboardLogo,
-      selectedIcon: SelectedDashboardLogo,
-      route: "/dashboard"
-    },
-    {
-      text: "Companies",
-      icon: CompanyLogo,
-      selectedIcon: SelectedCompanyLogo,
-      route: "companies"
-    },
-    {
-      text: "Users",
-      icon: UserLogo,
-      selectedIcon: SelectedUserLogo,
-      route: "user-management"
-    },
-    {
-      text: "Machines",
-      icon: MachinesLogo,
-      selectedIcon: SelectedMachinesLogo,
-      route: "machines"
-    },
-    {
-      text: "Operators",
-      icon: OperatorsLogo,
-      selectedIcon: SelectedOperatorLogo,
-      route: "operators"
-    },
-    {
-      text: "Job Sites",
-      icon: JobLogo,
-      selectedIcon: SelectedJobLogo,
-      route: "job-sites"
-    },
-    {
-      text: "Maintenance",
-      icon: MaintenanceLogo,
-      selectedIcon: SelectedMaintenanceLogo,
-      route: "maintenance"
-    }
-  ];
-
   const SuperAdminlistItems = [
     {
       text: "Dashboard",
@@ -221,6 +176,10 @@ function Sidebar2({ onClose }) {
     onClose(false); // Close the sidebar when an item is clicked
   };
 
+  const handleCloseSidebar = () => {
+    onClose(false); 
+  }
+
   const handleLogout = async () => {
     try {
       // Sign out the user from Firebase Authentication
@@ -251,7 +210,7 @@ function Sidebar2({ onClose }) {
             style={{ width: "70%", maxWidth: "120px" }}
           />
         </Box>
-        <IconButton onClick={onClose} sx={{ color: "white" }}>
+        <IconButton onClick={handleCloseSidebar} sx={{ color: "white" }}>
           <CloseIcon />
         </IconButton>
       </Box>

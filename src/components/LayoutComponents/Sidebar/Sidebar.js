@@ -168,9 +168,6 @@ function Sidebar() {
     }
   ];
 
-  // // Conditionally set the list items based on the userRole
-  // const listToRender = user.role === "superAdmin" ? SuperAdminlistItems : AdminlistItems;
-  // Conditionally set the list items based on the userRole
   let listToRender;
   if (user.role === "superAdmin") {
     listToRender = SuperAdminlistItems;

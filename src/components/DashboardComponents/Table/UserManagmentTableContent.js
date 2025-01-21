@@ -119,43 +119,73 @@ export default function TableContent() {
 
   const handleDeleteUser = async (userId) => {
     try {
-      const db = getDatabase();
-      const authInstance = getAuth();
+        const db = getDatabase();
+        const authInstance = getAuth();
 
-      // 1. Delete user from the 'users' node
-      const userRef = ref(db, `users/${userId}`);
-      await remove(userRef);
+        // 1. Fetch the user's data before deleting
+        const userRef = ref(db, `users/${userId}`);
+        const userSnapshot = await get(userRef);
 
-      // 2. If the logged-in user is being deleted, delete from Firebase Authentication
-      const currentUser = authInstance.currentUser;
-      if (currentUser && currentUser.uid === userId) {
-        try {
-          await deleteUser(currentUser);
-          console.log(
-            `User with UID: ${userId} deleted from Firebase Authentication.`
-          );
-        } catch (authError) {
-          console.error(
-            `Error deleting user from Firebase Authentication: ${authError.message}`
-          );
+        if (!userSnapshot.exists()) {
+            setAlert({
+                open: true,
+                severity: "error",
+                message: "User not found.",
+            });
+            return;
         }
-      }
 
-      // 3. Update the local UI state by removing the deleted user
-      setUsers((prevUsers) => prevUsers.filter((user) => user.id !== userId));
+        const userData = userSnapshot.val();
+        const { name, serialNumbers } = userData;
 
-      // alert("User and associated data have been deleted successfully.");
-      setAlert({
-        open: true,
-        severity: "success",
-        message: "User and associated data have been deleted successfully.",
-      });
+        // 2. Add the user to the `deleted_users` node in the machine
+        if (serialNumbers) {
+            for (const machineIp in serialNumbers) {
+                const serialCode = serialNumbers[machineIp].serial;
+
+                // Add the user to the `deleted_users` node in the machine
+                const deletedUserRef = ref(db, `machines/${machineIp}/deleted_users/${serialCode}`);
+                await set(deletedUserRef, {
+                    userID: userId,
+                    name: name,
+                });
+
+                console.log(`User ${userId} added to deleted_users in machine ${machineIp}`);
+            }
+        }
+
+        // 3. Delete the user from the 'users' node
+        await remove(userRef);
+
+        // 4. If the logged-in user is being deleted, delete from Firebase Authentication
+        const currentUser = authInstance.currentUser;
+        if (currentUser && currentUser.uid === userId) {
+            try {
+                await deleteUser(currentUser);
+                console.log(`User with UID: ${userId} deleted from Firebase Authentication.`);
+            } catch (authError) {
+                console.error(`Error deleting user from Firebase Authentication: ${authError.message}`);
+            }
+        }
+
+        // 5. Update the local UI state by removing the deleted user
+        setUsers((prevUsers) => prevUsers.filter((user) => user.userID !== userId));
+
+        // 6. Show success message
+        setAlert({
+            open: true,
+            severity: "success",
+            message: "User and associated data have been deleted successfully.",
+        });
     } catch (error) {
-      console.error(`Error deleting user: ${error.message}`);
-      setError("Error deleting user and their data.");
+        console.error(`Error deleting user: ${error.message}`);
+        setAlert({
+            open: true,
+            severity: "error",
+            message: "Error deleting user and their data.",
+        });
     }
-  };
-
+};
   const [openEditModal, setOpenEditModal] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
 

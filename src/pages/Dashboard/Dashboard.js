@@ -11,9 +11,7 @@ function Dashboard() {
             <Sidebar />
             <Box flex={10} >
                 <Navbar />
-                <Outlet />
-                {/* <ResGridSystem1 /> */}
-                {/* <ResGridSystem /> */}
+                <Outlet />            
             </Box>
         </Box>
     )

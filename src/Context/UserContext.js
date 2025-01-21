@@ -6,6 +6,9 @@ const UserContext = createContext();
 // Create a Provider Component to wrap the app and provide user data to all components
 export const UserProvider = ({ children }) => {
   const [user, setUser] = useState(null);
+  const isAuthenticated = !!user;
+
+  console.log("here is the " , isAuthenticated)
 
   useEffect(() => {
     // Try to get user data from localStorage (or you can fetch from DB if not found)
@@ -22,7 +25,7 @@ export const UserProvider = ({ children }) => {
   };
 
   return (
-    <UserContext.Provider value={{ user, updateUserData }}>
+    <UserContext.Provider value={{ user, isAuthenticated, updateUserData }}>
       {children}
     </UserContext.Provider>
   );

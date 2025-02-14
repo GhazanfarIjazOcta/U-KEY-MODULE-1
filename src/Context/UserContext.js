@@ -8,7 +8,7 @@ export const UserProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const isAuthenticated = !!user;
 
-  console.log("here is the " , isAuthenticated)
+  console.log("here is the ", isAuthenticated);
 
   useEffect(() => {
     // Try to get user data from localStorage (or you can fetch from DB if not found)

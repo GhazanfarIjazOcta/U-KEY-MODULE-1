@@ -1,4 +1,7 @@
+// REACT IMPORTS
 import * as React from "react";
+
+// MUI IMPORTS
 import Box from "@mui/material/Box";
 import Card from "@mui/material/Card";
 import Typography from "@mui/material/Typography";
@@ -10,8 +13,10 @@ import {
   InputBase,
   Paper,
   Stack,
-  TextField,
+  TextField
 } from "@mui/material";
+
+// ASSESTS IMPORTS
 import User from "../../assets/Card/user.png";
 import SearchIcon from "@mui/icons-material/Search";
 import AddIcon from "@mui/icons-material/Add";
@@ -24,7 +29,7 @@ export default function DashboardTableHeader({
   buttonText,
   trip,
   exportIcon,
-  icon,
+  icon
 }) {
   return (
     <Box height={"100%"} width={"100%"}>
@@ -37,7 +42,7 @@ export default function DashboardTableHeader({
           // backgroundColor: "red",
           display: "flex",
           flexDirection: "column",
-          justifyContent: "space-evenly",
+          justifyContent: "space-evenly"
           // paddingTop: "8px",
         }}
       >
@@ -55,7 +60,7 @@ export default function DashboardTableHeader({
                   display: "flex",
                   justifyContent: "center",
                   alignItems: "center",
-                  borderRadius: "2px",
+                  borderRadius: "2px"
                 }}
               >
                 <img src={icon ? icon : User} height={"16px"} width={"16px"} />
@@ -68,11 +73,11 @@ export default function DashboardTableHeader({
                     lg: "14px",
                     md: "12px",
                     sm: "12px",
-                    xs: "14px",
+                    xs: "14px"
                   },
                   color: "#5A607F",
                   fontWeight: 400,
-                  fontFamily: "Inter, sans-serif",
+                  fontFamily: "Inter, sans-serif"
                 }}
               >
                 {text}
@@ -89,7 +94,7 @@ export default function DashboardTableHeader({
                       width: 317,
                       height: 46,
                       boxShadow: "none",
-                      border: "1px solid #E0E0E0",
+                      border: "1px solid #E0E0E0"
                     }}
                   >
                     <Stack
@@ -103,7 +108,7 @@ export default function DashboardTableHeader({
                           fontSize: "16px",
                           color: "#5A607F",
                           fontWeight: 500,
-                          fontFamily: "Inter, sans-serif",
+                          fontFamily: "Inter, sans-serif"
                         }}
                       >
                         Total Trips
@@ -113,7 +118,7 @@ export default function DashboardTableHeader({
                           fontSize: "24px",
                           color: "#14181F",
                           fontWeight: 500,
-                          fontFamily: "Poppins, sans-serif",
+                          fontFamily: "Poppins, sans-serif"
                         }}
                       >
                         212
@@ -135,7 +140,7 @@ export default function DashboardTableHeader({
                           fontSize: "16px",
                           color: "#5A607F",
                           fontWeight: 500,
-                          fontFamily: "Inter, sans-serif",
+                          fontFamily: "Inter, sans-serif"
                         }}
                       >
                         Active
@@ -145,7 +150,7 @@ export default function DashboardTableHeader({
                           fontSize: "24px",
                           color: "#14181F",
                           fontWeight: 500,
-                          fontFamily: "Poppins, sans-serif",
+                          fontFamily: "Poppins, sans-serif"
                         }}
                       >
                         210
@@ -173,7 +178,7 @@ export default function DashboardTableHeader({
                           <SearchIcon fontSize="small" />
                         </IconButton>
                       </InputAdornment>
-                    ),
+                    )
                   }}
                   sx={{
                     "& .MuiInputBase-root": {
@@ -182,16 +187,16 @@ export default function DashboardTableHeader({
                         sm: "38px",
                         md: "32px",
                         lg: "32px",
-                        xl: "38px",
+                        xl: "38px"
                       }, // Adjust the height as needed
                       fontSize: "12px",
                       width: {
                         lg: "200px",
                         md: "180px",
-                        xs: "180px",
+                        xs: "180px"
                       }, // Responsive width
-                      border: "1px solid #E2E8F0",
-                    },
+                      border: "1px solid #E2E8F0"
+                    }
                   }}
                 />
               </Box>
@@ -220,7 +225,7 @@ export default function DashboardTableHeader({
                           }
                         </IconButton>
                       </InputAdornment>
-                    ),
+                    )
                   }}
                   sx={{
                     "& .MuiInputBase-root": {
@@ -229,18 +234,18 @@ export default function DashboardTableHeader({
                         sm: "38px",
                         md: "32px",
                         lg: "32px",
-                        xl: "38px",
+                        xl: "38px"
                       }, // Adjust the height as needed
                       fontSize: "12px",
                       width: {
                         md: "80px",
                         md: "100px",
-                        xs: "120px",
+                        xs: "120px"
                       }, // Responsive width
                       fontSize: "12px",
-                      boxShadow: "none",
+                      boxShadow: "none"
                       // Responsive width
-                    },
+                    }
                   }}
                 />
               </Box>
@@ -268,7 +273,7 @@ export default function DashboardTableHeader({
                           }
                         </IconButton>
                       </InputAdornment>
-                    ),
+                    )
                   }}
                   sx={{
                     "& .MuiInputBase-root": {
@@ -277,17 +282,17 @@ export default function DashboardTableHeader({
                         sm: "38px",
                         md: "32px",
                         lg: "32px",
-                        xl: "38px",
+                        xl: "38px"
                       }, // Adjust the height as needed
                       fontSize: "12px",
                       width: {
                         md: "130px",
                         md: "150px",
-                        xs: "180px",
+                        xs: "180px"
                       }, // Responsive width
                       fontSize: "12px",
-                      boxShadow: "none",
-                    },
+                      boxShadow: "none"
+                    }
                   }}
                 />
               </Box>
@@ -343,16 +348,16 @@ export default function DashboardTableHeader({
                       sm: "400px",
                       md: "400px",
                       lg: "420px",
-                      xl: "420px",
+                      xl: "420px"
                     },
                     height: {
                       sm: "42px",
                       md: "30px",
                       lg: "35px",
-                      xl: "42px",
+                      xl: "42px"
                     },
                     boxShadow: "none",
-                    border: "1px solid #E0E0E0",
+                    border: "1px solid #E0E0E0"
                   }}
                 >
                   <Stack
@@ -367,7 +372,7 @@ export default function DashboardTableHeader({
                         fontSize: "16px",
                         color: "#5A607F",
                         fontWeight: 500,
-                        fontFamily: "Inter, sans-serif",
+                        fontFamily: "Inter, sans-serif"
                       }}
                     >
                       Total Trips
@@ -378,11 +383,11 @@ export default function DashboardTableHeader({
                           sm: "20px",
                           md: "18px",
                           lg: "21px",
-                          xl: "24px",
+                          xl: "24px"
                         },
                         color: "#14181F",
                         fontWeight: 500,
-                        fontFamily: "Poppins, sans-serif",
+                        fontFamily: "Poppins, sans-serif"
                       }}
                     >
                       212
@@ -405,7 +410,7 @@ export default function DashboardTableHeader({
                         fontSize: "16px",
                         color: "#5A607F",
                         fontWeight: 500,
-                        fontFamily: "Inter, sans-serif",
+                        fontFamily: "Inter, sans-serif"
                       }}
                     >
                       Active
@@ -416,11 +421,11 @@ export default function DashboardTableHeader({
                           sm: "20px",
                           md: "18px",
                           lg: "21px",
-                          xl: "24px",
+                          xl: "24px"
                         },
                         color: "#14181F",
                         fontWeight: 500,
-                        fontFamily: "Poppins, sans-serif",
+                        fontFamily: "Poppins, sans-serif"
                       }}
                     >
                       210
@@ -441,7 +446,7 @@ export default function DashboardTableHeader({
                         fontSize: "16px",
                         color: "#5A607F",
                         fontWeight: 500,
-                        fontFamily: "Inter, sans-serif",
+                        fontFamily: "Inter, sans-serif"
                       }}
                     >
                       --
@@ -453,11 +458,11 @@ export default function DashboardTableHeader({
                           sm: "10px", // Small screens
                           md: "16px", // Medium screens
                           lg: "20px", // Large screens
-                          xl: "24px", // Extra large screens
+                          xl: "24px" // Extra large screens
                         },
                         color: "#14181F",
                         fontWeight: 500,
-                        fontFamily: "Poppins, sans-serif",
+                        fontFamily: "Poppins, sans-serif"
                       }}
                     >
                       --
@@ -476,7 +481,7 @@ export default function DashboardTableHeader({
                   sm: "42px",
                   md: "30px",
                   lg: "35px",
-                  xl: "42px",
+                  xl: "42px"
                 },
                 backgroundColor: "white",
                 color: "#344054",
@@ -489,8 +494,8 @@ export default function DashboardTableHeader({
                 border: "1px solid #D0D5DD",
                 gap: "8px", // spacing between icon and text
                 "&:hover": {
-                  backgroundColor: "white",
-                },
+                  backgroundColor: "white"
+                }
               }}
             >
               <img src={cloudLogo} width={"20px"} height={"20px"} />

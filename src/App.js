@@ -47,7 +47,7 @@ function App() {
       {/* Suspense with Loader fallback */}
       <UserProvider>
         <Suspense fallback={<Loader />}>
-          <Routes >
+          <Routes>
             <Route path="/" element={<Login />} />
             <Route path="/signup" element={<Signup />} />
             <Route path="/login" element={<Login />} />
@@ -55,7 +55,6 @@ function App() {
             <Route path="/foreman-signup" element={<ForemanSignup />} />
             {/* Use a wildcard for unknown routes */}
             <Route path="*" element={<Loader />} />
-        
 
             {/* Dashboard Routes */}
             <Route path="/dashboard" element={<Dashboard />}>
@@ -70,7 +69,10 @@ function App() {
               <Route path="operators/add-operator" element={<AddOperator />} />
               <Route path="machines/add-machine" element={<AddMachine />} />
               <Route path="job-sites/add-jobsites" element={<AddJobSites />} />
-              <Route path="maintenance/add-maintenance" element={<AddMaintenance />}/>
+              <Route
+                path="maintenance/add-maintenance"
+                element={<AddMaintenance />}
+              />
             </Route>
 
             {/* Dashboard Routes */}

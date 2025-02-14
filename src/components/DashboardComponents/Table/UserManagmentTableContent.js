@@ -119,73 +119,85 @@ export default function TableContent() {
 
   const handleDeleteUser = async (userId) => {
     try {
-        const db = getDatabase();
-        const authInstance = getAuth();
-
-        // 1. Fetch the user's data before deleting
-        const userRef = ref(db, `users/${userId}`);
-        const userSnapshot = await get(userRef);
-
-        if (!userSnapshot.exists()) {
-            setAlert({
-                open: true,
-                severity: "error",
-                message: "User not found.",
-            });
-            return;
-        }
-
-        const userData = userSnapshot.val();
-        const { name, serialNumbers } = userData;
-
-        // 2. Add the user to the `deleted_users` node in the machine
-        if (serialNumbers) {
-            for (const machineIp in serialNumbers) {
-                const serialCode = serialNumbers[machineIp].serial;
-
-                // Add the user to the `deleted_users` node in the machine
-                const deletedUserRef = ref(db, `machines/${machineIp}/deleted_users/${serialCode}`);
-                await set(deletedUserRef, {
-                    userID: userId,
-                    name: name,
-                });
-
-                console.log(`User ${userId} added to deleted_users in machine ${machineIp}`);
-            }
-        }
-
-        // 3. Delete the user from the 'users' node
-        await remove(userRef);
-
-        // 4. If the logged-in user is being deleted, delete from Firebase Authentication
-        const currentUser = authInstance.currentUser;
-        if (currentUser && currentUser.uid === userId) {
-            try {
-                await deleteUser(currentUser);
-                console.log(`User with UID: ${userId} deleted from Firebase Authentication.`);
-            } catch (authError) {
-                console.error(`Error deleting user from Firebase Authentication: ${authError.message}`);
-            }
-        }
-
-        // 5. Update the local UI state by removing the deleted user
-        setUsers((prevUsers) => prevUsers.filter((user) => user.userID !== userId));
-
-        // 6. Show success message
+      const db = getDatabase();
+      const authInstance = getAuth();
+  
+      // 1. Fetch the user's data before deleting
+      const userRef = ref(db, `users/${userId}`);
+      const userSnapshot = await get(userRef);
+  
+      if (!userSnapshot.exists()) {
         setAlert({
-            open: true,
-            severity: "success",
-            message: "User and associated data have been deleted successfully.",
+          open: true,
+          severity: "error",
+          message: "User not found.",
         });
+        return;
+      }
+  
+      const userData = userSnapshot.val();
+  
+      // Check if the user is inactive
+      if (userData.status === "inactive") {
+        setAlert({
+          open: true,
+          severity: "error",
+          message: "Cannot delete an inactive user.",
+        });
+        return;
+      }
+  
+      // Proceed with deletion if the user is active
+      const { name, serialNumbers } = userData;
+  
+      // 2. Add the user to the `deleted_users` node in the machine
+      if (serialNumbers) {
+        for (const machineIp in serialNumbers) {
+          const serialCode = serialNumbers[machineIp].serial;
+  
+          // Add the user to the `deleted_users` node in the machine
+          const deletedUserRef = ref(db, `machines/${machineIp}/deleted_users/${serialCode}`);
+          await set(deletedUserRef, {
+            userID: userId,
+            name: name,
+          });
+  
+          console.log(`User ${userId} added to deleted_users in machine ${machineIp}`);
+        }
+      }
+  
+      // 3. Delete the user from the 'users' node
+      await remove(userRef);
+  
+      // 4. If the logged-in user is being deleted, delete from Firebase Authentication
+      const currentUser = authInstance.currentUser;
+      if (currentUser && currentUser.uid === userId) {
+        try {
+          await deleteUser(currentUser);
+          console.log(`User with UID: ${userId} deleted from Firebase Authentication.`);
+        } catch (authError) {
+          console.error(`Error deleting user from Firebase Authentication: ${authError.message}`);
+        }
+      }
+  
+      // 5. Update the local UI state by removing the deleted user
+      setUsers((prevUsers) => prevUsers.filter((user) => user.userID !== userId));
+  
+      // 6. Show success message
+      setAlert({
+        open: true,
+        severity: "success",
+        message: "User and associated data have been deleted successfully.",
+      });
     } catch (error) {
-        console.error(`Error deleting user: ${error.message}`);
-        setAlert({
-            open: true,
-            severity: "error",
-            message: "Error deleting user and their data.",
-        });
+      console.error(`Error deleting user: ${error.message}`);
+      setAlert({
+        open: true,
+        severity: "error",
+        message: "Error deleting user and their data.",
+      });
     }
-};
+  };
   const [openEditModal, setOpenEditModal] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
 
@@ -216,20 +228,32 @@ export default function TableContent() {
 
   const handleSaveChanges = async () => {
     if (!selectedUser) return;
-
+  
     try {
       const db = getDatabase();
-
+  
       // Access the users directly
       const usersRef = ref(db, "users");
       const usersSnapshot = await get(usersRef);
-
+  
       if (usersSnapshot.exists()) {
         const usersData = usersSnapshot.val();
-
+  
         // Loop through the users to find the user by userID
         for (const userId in usersData) {
           if (userId === selectedUser.userID) {
+            const userData = usersData[userId];
+  
+            // Check if the user is inactive
+            if (userData.status === "inactive") {
+              setAlert({
+                open: true,
+                severity: "error",
+                message: "Cannot update an inactive user.",
+              });
+              return;
+            }
+  
             const updatedData = {
               name: editName,
               email: editEmail,
@@ -237,13 +261,11 @@ export default function TableContent() {
               status: editStatus,
               role: editRole
             };
-
+  
             // Update the user's data in the users node
             const userRef = ref(db, `users/${userId}`);
             await update(userRef, updatedData);
-
-            
-
+  
             // Update the UI by updating the users list in local state
             setUsers((prevUsers) =>
               prevUsers.map((user) =>
@@ -252,10 +274,9 @@ export default function TableContent() {
                   : user
               )
             );
-
+  
             handleAssignMachineIP(selectedUser.userID);
-
-            // alert("User data updated successfully.");
+  
             setAlert({
               open: true,
               severity: "success",

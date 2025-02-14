@@ -1,17 +1,22 @@
+// REACT IMPORTS
 import * as React from "react";
+import { useState } from "react";
+import { useEffect } from "react";
+
+// MUI IMPORTS
+import { Box, Stack, Typography, IconButton, Dialog } from "@mui/material";
+import { TableStyles } from "../../UI/Styles";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
 import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
+import CloseIcon from "@mui/icons-material/Close";
 
-import { Box, Stack, Typography, IconButton, Dialog } from "@mui/material";
-import { TableStyles } from "../../UI/Styles";
-
+// FIRE BASE IMPORTS
 import { onAuthStateChanged } from "firebase/auth";
 import { auth } from "../../../firebase"; // Firebase auth instance
-
 import {
   getDatabase,
   ref,
@@ -24,19 +29,14 @@ import {
 import { getAuth, deletemachine } from "firebase/auth"; // Import deletemachine from Firebase Authentication
 import { useNavigate } from "react-router-dom";
 
+// COMPONENTS IMPORTS
 import { useUser } from "../../../Context/UserContext";
-import { useState } from "react";
-
-import { useEffect } from "react";
-
 import Slider from "react-slick";
-
-import CloseIcon from "@mui/icons-material/Close";
-
 import { machineUI } from "../../UI/Main";
 
 export default function MachinesTableContent() {
   const { user, updatemachineData } = useUser(); // Destructure machine data from context
+
   console.log("machine organization id in ", user.organizationID);
 
   const CurrentmachineID = user.uid;
@@ -45,9 +45,7 @@ export default function MachinesTableContent() {
 
   const CurrentOrganizationID = user.organizationID;
   const [machines, setmachines] = useState([]);
-
   const navigate = useNavigate();
-
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 

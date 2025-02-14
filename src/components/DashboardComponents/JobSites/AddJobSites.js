@@ -23,7 +23,8 @@ function AddJobSites() {
     companyName: "",
     locationName: "",
     locationURL: "",
-    status: "Active" // Default status
+    status: "Active", // Default status
+    jobSiteNotes: "" // New field for job site notes
   });
 
   const [jobSites, setJobSites] = useState([]); // To hold existing job sites from the database
@@ -83,7 +84,8 @@ function AddJobSites() {
         }!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x89c24fa5d33f083b%3A0xd3cf0b0078a0e217!2s${encodeURIComponent(
           formData.locationName
         )}!5e0!3m2!1sen!2sus!4vYOUR_EMBED_API_KEY`,
-        status: formData.status
+        status: formData.status,
+        jobSiteNotes: formData.jobSiteNotes // Include job site notes
       };
 
       // Add the new job site and filter out null values before updating
@@ -96,7 +98,6 @@ function AddJobSites() {
       );
       await set(jobSitesRef, updatedJobSites);
 
-      // alert("Job site added successfully!");
       setAlert({
         open: true,
         severity: "success",
@@ -106,10 +107,10 @@ function AddJobSites() {
         companyName: "",
         locationName: "",
         locationURL: "",
-        status: "Active"
+        status: "Active",
+        jobSiteNotes: "" // Reset job site notes field
       });
     } catch (error) {
-      // alert("Error: " + error.message);
       setAlert({
         open: true,
         severity: "error",
@@ -150,6 +151,19 @@ function AddJobSites() {
             )}
           </Box>
         ))}
+      </Box>
+
+      <Box sx={{ marginBottom: 2 }}>
+        <Typography sx={{ mb: 1 }}>Job Site Notes:</Typography>
+        <TextField
+          name="jobSiteNotes"
+          value={formData.jobSiteNotes}
+          onChange={handleChange}
+          fullWidth
+          multiline
+          rows={4}
+          placeholder="Enter job site notes here..."
+        />
       </Box>
 
       <Box sx={{ marginBottom: 2 }}>

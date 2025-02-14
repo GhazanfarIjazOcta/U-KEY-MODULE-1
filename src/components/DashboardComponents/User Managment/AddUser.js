@@ -18,14 +18,13 @@ import {
   ref,
   set,
   get,
-  remove,
 } from "../../../firebase";
 import { useUser } from "../../../Context/UserContext";
 import CustomAlert from "../../UI/CustomAlert";
 
 function AddUser() {
   const [formData, setFormData] = useState({
-    userId: "",
+    // userId: "",
     name: "",
     email: "",
     phone: "",
@@ -39,7 +38,6 @@ function AddUser() {
 
   const [availableIPs, setAvailableIPs] = useState([]); // State to store IPs
   const { user } = useUser();
-  const CurrentUserID = user.uid;
   const CurrentOrganizationID = user.organizationID;
 
   const [alert, setAlert] = useState({
@@ -50,6 +48,12 @@ function AddUser() {
 
   const handleAlertClose = () => {
     setAlert({ ...alert, open: false });
+  };
+
+  // Helper function to check if all digits in the serial code are even
+  const isAllDigitsEven = (code) => {
+    if (typeof code !== "string" || code.length !== 5) return false;
+    return code.split("").every((digit) => parseInt(digit) % 2 === 0);
   };
 
   // Fetch available machine IPs from Firebase for the current organization
@@ -76,28 +80,57 @@ function AddUser() {
     setFormData((prevData) => ({ ...prevData, [name]: value }));
   };
 
-  const handleAddUser = async () => {
-    const { serialNumbers, tempIp, tempSerial, ...userData } = formData;
-
-    if (!tempIp || !tempSerial) {
+  // Validate form inputs
+  const validateForm = () => {
+    if (!formData.name || !formData.email || !formData.password) {
       setAlert({
         open: true,
         severity: "error",
-        message: "Please select a machine IP and enter a serial code.",
+        message: "Please fill out all required fields.",
       });
-      return;
+      return false;
     }
 
-    try {
-      // Step 1: Create the new user in Firebase Auth
-      const newUser = await createUserWithEmailAndPassword(
-        auth,
-        formData.email,
-        formData.password
-      );
-      const newUserUID = newUser.user.uid;
+    // Check if the serial code is a 5-digit number
+    if (!/^\d{5}$/.test(formData.tempSerial)) {
+      setAlert({
+        open: true,
+        severity: "error",
+        message: "Serial code must be a 5-digit number.",
+      });
+      return false;
+    }
 
-      // Step 2: Add the user to the `inactive_web_users` node in the selected machine
+    // Check if all digits in the serial code are even
+    if (!isAllDigitsEven(formData.tempSerial)) {
+      setAlert({
+        open: true,
+        severity: "error",
+        message: "All digits in the serial code must be even.",
+      });
+      return false;
+    }
+
+    if (!formData.tempIp) {
+      setAlert({
+        open: true,
+        severity: "error",
+        message: "Please select a machine IP.",
+      });
+      return false;
+    }
+
+    return true;
+  };
+
+  // Handle form submission
+  const handleAddUser = async () => {
+    if (!validateForm()) return;
+
+    const { tempIp, tempSerial, ...userData } = formData;
+
+    try {
+      // Step 1: Check if the 5-digit code already exists in the machine
       const machineRef = ref(rtdb, `machines/${tempIp}`);
       const machineSnapshot = await get(machineRef);
 
@@ -110,6 +143,35 @@ function AddUser() {
         return;
       }
 
+      const machineData = machineSnapshot.val();
+
+      // Check if the code exists in inactive_web_users or foreman nodes
+      const isCodeInInactiveUsers =
+        machineData.inactive_web_users &&
+        Object.keys(machineData.inactive_web_users).includes(tempSerial);
+
+      const isCodeInForeman =
+        machineData.foreman &&
+        Object.keys(machineData.foreman).includes(tempSerial);
+
+      if (isCodeInInactiveUsers || isCodeInForeman) {
+        setAlert({
+          open: true,
+          severity: "error",
+          message: "The 5-digit code is already taken. Please use a unique code.",
+        });
+        return;
+      }
+
+      // Step 2: Create the new user in Firebase Auth
+      const newUser = await createUserWithEmailAndPassword(
+        auth,
+        formData.email,
+        formData.password
+      );
+      const newUserUID = newUser.user.uid;
+
+      // Step 3: Add the user to the `inactive_web_users` node in the selected machine
       const inactiveUserRef = ref(
         rtdb,
         `machines/${tempIp}/inactive_web_users/${tempSerial}`
@@ -119,13 +181,15 @@ function AddUser() {
         name: formData.name,
       });
 
-      // Step 3: Save user data to Firebase Database
+      // Step 4: Save user data to Firebase Database
       const userDocRef = ref(rtdb, `users/${newUserUID}`);
       await set(userDocRef, {
         ...userData,
         userID: newUserUID,
         organizationID: CurrentOrganizationID,
         lastLogin: new Date().toISOString(),
+        machineID: tempIp,
+        code: tempSerial,
         serialNumbers: {
           [tempIp]: {
             ip: tempIp,
@@ -142,7 +206,7 @@ function AddUser() {
 
       // Reset the form
       setFormData({
-        userId: "",
+        // userId: "",
         name: "",
         email: "",
         phone: "",
@@ -198,7 +262,9 @@ function AddUser() {
         </Box>
 
         <Box sx={{ marginBottom: 2 }}>
-          <Typography sx={{ marginBottom: 1 }}>Assign Serial 5-digit Foreman Code:</Typography>
+          <Typography sx={{ marginBottom: 1 }}>
+            Assign Serial 5-digit Foreman Code:
+          </Typography>
           <FormControl fullWidth sx={{ marginBottom: 2 }}>
             <InputLabel>Machine IP</InputLabel>
             <Select
@@ -246,7 +312,10 @@ function AddUser() {
 
 export default AddUser;
 
-
+// ============================================================================
+//               KEPT FOR FUTURE REFERENCE
+//                  PREVIOUS FLOW CODE
+//=========================================================================
 
 // import React, { useState, useEffect } from "react";
 // import {
@@ -274,7 +343,6 @@ export default AddUser;
 
 // import CustomAlert from "../../UI/CustomAlert";
 
-
 // function AddUser() {
 //   const [formData, setFormData] = useState({
 //     userId: "",
@@ -295,17 +363,15 @@ export default AddUser;
 //   const CurrentUserID = user.uid;
 //   const CurrentOrganizationID = user.organizationID;
 
-
 //     const [alert, setAlert] = useState({
 //       open: false,
 //       severity: "success",
 //       message: "",
 //     });
-    
+
 //       const handleAlertClose = () => {
 //         setAlert({ ...alert, open: false });
 //       };
-  
 
 //   useEffect(() => {
 //     // Fetch available machine IPs from Firebase
@@ -329,16 +395,14 @@ export default AddUser;
 //     setFormData((prevData) => ({ ...prevData, [name]: value }));
 //   };
 
-
-
 //   const handleAddUser = async () => {
 //     const { serialNumbers, ...userData } = formData;
-  
+
 //     // Step 1: Add the temporary serial and IP if they are provided
 //     // if (tempIp && tempSerial) {
 //     //   serialNumbers[tempIp] = { ip: tempIp, serial: tempSerial }; // Add to serialNumbers
 //     // }
-  
+
 //     try {
 //       // Step 2: Create the new user in Firebase Auth
 //       const newUser = await createUserWithEmailAndPassword(
@@ -347,23 +411,23 @@ export default AddUser;
 //         formData.password
 //       );
 //       const newUserUID = newUser.user.uid;
-  
+
 //       const assignedMachines = {};
-  
+
 //       // Step 3: Process serial numbers
 //       for (const ip in serialNumbers) {
 //         const { serial } = serialNumbers[ip];
 //         const machineRef = ref(rtdb, `machines/${ip}`);
 //         const machineSnapshot = await get(machineRef);
-  
+
 //         if (!machineSnapshot.exists()) {
 //           console.log(`Machine with IP ${ip} does not exist.`);
 //           continue;
 //         }
-  
+
 //         const machineData = machineSnapshot.val();
 //         const codes = machineData.codes || {};
-  
+
 //         // Find the key for the serial code and remove it
 //         const codeKey = Object.keys(codes).find((key) => codes[key] === serial);
 //         if (codeKey) {
@@ -371,15 +435,15 @@ export default AddUser;
 //           await remove(codeFieldRef);
 //           console.log(`Removed serial code ${serial} from machine ${ip}.`);
 //         }
-  
+
 //         // Assign the machine to the user
 //         const roleType = serial.length === 4 ? "operators" : "foreman"; // Determine role
 //         const userFieldRef = ref(rtdb, `machines/${ip}/${roleType}/${serial}`);
 //         await set(userFieldRef, { userID: newUserUID });
-  
+
 //         assignedMachines[ip] = { serial, role: roleType };
 //       }
-  
+
 //       // Step 4: Save user data to Firebase Database
 //       const userDocRef = ref(rtdb, `users/${newUserUID}`);
 //       await set(userDocRef, {
@@ -390,14 +454,14 @@ export default AddUser;
 //         assignedMachines, // Save assigned machines
 //         serialNumbers
 //       });
-  
+
 //       // alert("User added successfully!");
 //       setAlert({
 //         open: true,
 //         severity: "success",
 //         message: "User added successfully!.",
 //       });
-  
+
 //       // Reset the form
 //       setFormData({
 //         userId: "",
@@ -405,7 +469,7 @@ export default AddUser;
 //         email: "",
 //         phone: "",
 //         // role: "employee",
-//         role: "employee",   
+//         role: "employee",
 //         statadminus: "inactive",
 //         password: "",
 //         serialNumbers: {},
@@ -494,7 +558,7 @@ export default AddUser;
 //             fullWidth
 //           />
 //         </Box>
-        
+
 //       </Box>
 
 //       <Stack direction="row" justifyContent="flex-end">

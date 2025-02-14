@@ -177,8 +177,8 @@ function Sidebar2({ onClose }) {
   };
 
   const handleCloseSidebar = () => {
-    onClose(false); 
-  }
+    onClose(false);
+  };
 
   const handleLogout = async () => {
     try {
@@ -199,7 +199,7 @@ function Sidebar2({ onClose }) {
   return (
     <Box
       sx={{
-       ...sidebarUI.mobileSidebarMainBox
+        ...sidebarUI.mobileSidebarMainBox
       }}
     >
       <Box display="flex" justifyContent="space-between" alignItems="center">
@@ -263,7 +263,7 @@ function Sidebar2({ onClose }) {
           }
           onClick={handleLogout}
           sx={{
-         ...sidebarUI.mobileSideBarButton
+            ...sidebarUI.mobileSideBarButton
           }}
         >
           Log out

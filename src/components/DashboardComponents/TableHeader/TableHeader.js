@@ -1,4 +1,7 @@
+// REACT IMPORTS
 import * as React from "react";
+
+// MUI IMPORTS
 import Box from "@mui/material/Box";
 import Card from "@mui/material/Card";
 import Typography from "@mui/material/Typography";
@@ -10,7 +13,7 @@ import {
   Paper,
   Stack,
   TextField,
-  useMediaQuery,
+  useMediaQuery
 } from "@mui/material";
 import User from "../../../assets/Card/user.png";
 import SearchIcon from "@mui/icons-material/Search";
@@ -27,7 +30,7 @@ export default function TableHeader({
   trip,
   exportIcon,
   icon,
-  route,
+  route
 }) {
   const navigate = useNavigate();
   const isMobile = useMediaQuery("(max-width:980px)");
@@ -40,7 +43,7 @@ export default function TableHeader({
           border: "none",
           boxShadow: "none",
           padding: isMobile ? "12px" : "24px",
-          height: isMobile ? "auto" : "4vh",
+          height: isMobile ? "auto" : "4vh"
         }}
       >
         <React.Fragment>
@@ -62,7 +65,7 @@ export default function TableHeader({
                   display: "flex",
                   justifyContent: "center",
                   alignItems: "center",
-                  borderRadius: "2px",
+                  borderRadius: "2px"
                 }}
               >
                 <img src={icon ? icon : User} height={"13px"} width={"20px"} />
@@ -73,7 +76,7 @@ export default function TableHeader({
                   fontSize: isMobile ? "12px" : "14px",
                   color: "#5A607F",
                   fontWeight: 400,
-                  fontFamily: "Inter, sans-serif",
+                  fontFamily: "Inter, sans-serif"
                 }}
               >
                 {text}
@@ -91,7 +94,7 @@ export default function TableHeader({
                       width: isMobile ? "100%" : 317,
                       height: 46,
                       boxShadow: "none",
-                      border: "1px solid #E0E0E0",
+                      border: "1px solid #E0E0E0"
                     }}
                   >
                     <Stack
@@ -105,7 +108,7 @@ export default function TableHeader({
                           fontSize: "16px",
                           color: "#5A607F",
                           fontWeight: 500,
-                          fontFamily: "Inter, sans-serif",
+                          fontFamily: "Inter, sans-serif"
                         }}
                       >
                         Total Trips
@@ -115,7 +118,7 @@ export default function TableHeader({
                           fontSize: "24px",
                           color: "#14181F",
                           fontWeight: 500,
-                          fontFamily: "Poppins, sans-serif",
+                          fontFamily: "Poppins, sans-serif"
                         }}
                       >
                         212
@@ -137,7 +140,7 @@ export default function TableHeader({
                           fontSize: "16px",
                           color: "#5A607F",
                           fontWeight: 500,
-                          fontFamily: "Inter, sans-serif",
+                          fontFamily: "Inter, sans-serif"
                         }}
                       >
                         Active
@@ -147,7 +150,7 @@ export default function TableHeader({
                           fontSize: "24px",
                           color: "#14181F",
                           fontWeight: 500,
-                          fontFamily: "Poppins, sans-serif",
+                          fontFamily: "Poppins, sans-serif"
                         }}
                       >
                         210
@@ -175,13 +178,13 @@ export default function TableHeader({
                           <SearchIcon />
                         </IconButton>
                       </InputAdornment>
-                    ),
+                    )
                   }}
                   sx={{
                     "& .MuiInputBase-root": {
                       height: "38px",
-                      width: isMobile ? "100%" : "200px",
-                    },
+                      width: isMobile ? "100%" : "200px"
+                    }
                   }}
                 />
               </Box>
@@ -204,13 +207,13 @@ export default function TableHeader({
                           }
                         </IconButton>
                       </InputAdornment>
-                    ),
+                    )
                   }}
                   sx={{
                     "& .MuiInputBase-root": {
                       height: "38px",
-                      width: isMobile ? "100%" : "110px",
-                    },
+                      width: isMobile ? "100%" : "110px"
+                    }
                   }}
                 />
               </Box>
@@ -232,8 +235,8 @@ export default function TableHeader({
                     paddingRight: "25px",
                     gap: "3px",
                     "&:hover": {
-                      backgroundColor: "#15294E",
-                    },
+                      backgroundColor: "#15294E"
+                    }
                   }}
                   onClick={() => navigate(route)}
                 >
@@ -259,8 +262,8 @@ export default function TableHeader({
                     paddingRight: "25px",
                     gap: "8px",
                     "&:hover": {
-                      backgroundColor: "white",
-                    },
+                      backgroundColor: "white"
+                    }
                   }}
                 >
                   <img src={cloudLogo} width={"20px"} height={"20px"} />

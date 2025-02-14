@@ -9,7 +9,15 @@ import DoneOutlinedIcon from "@mui/icons-material/DoneOutlined";
 import ClearOutlinedIcon from "@mui/icons-material/ClearOutlined";
 import Paper from "@mui/material/Paper";
 import { Stack, Typography } from "@mui/material";
-import { getDatabase, ref, query, equalTo, orderByChild, onValue, update } from "firebase/database"; // Import Firebase utilities
+import {
+  getDatabase,
+  ref,
+  query,
+  equalTo,
+  orderByChild,
+  onValue,
+  update
+} from "firebase/database"; // Import Firebase utilities
 import { useUser } from "../../../Context/UserContext";
 import CustomAlert from "../../UI/CustomAlert";
 
@@ -18,11 +26,10 @@ const MaintenanceTableContent = () => {
   const { user } = useUser(); // Get user data from context
   const CurrentOrganizationID = user?.organizationID;
 
-
   const [alert, setAlert] = useState({
     open: false,
     severity: "success",
-    message: "",
+    message: ""
   });
 
   const handleAlertClose = () => {
@@ -60,7 +67,7 @@ const MaintenanceTableContent = () => {
             return {
               machineID: machine.machineID,
               machineName: machine.machineName || "Unknown", // Handle missing machine name
-              maintenanceData: maintenanceInfo,
+              maintenanceData: maintenanceInfo
             };
           });
 
@@ -78,43 +85,43 @@ const MaintenanceTableContent = () => {
 
   const handleStatusChange = (machineID, maintenanceIndex, newStatus) => {
     const db = getDatabase();
-    const machineRef = ref(db, `machines/${machineID}/maintenance/${maintenanceIndex}`);
+    const machineRef = ref(
+      db,
+      `machines/${machineID}/maintenance/${maintenanceIndex}`
+    );
     update(machineRef, {
-      status: newStatus,
-    }).then(() => {
-      setMaintenanceData((prevData) => {
-        return prevData.map((record) => {
-          if (record.machineID === machineID) {
-            
-            const updatedMaintenance = [...record.maintenanceData];
-            updatedMaintenance[maintenanceIndex] = {
-              ...updatedMaintenance[maintenanceIndex],
-              status: newStatus,
-            };
-            setAlert({
-              open: true,
-              severity: "success",
-              message: "Maintenance Status Updated!",
-            });
-            return { ...record, maintenanceData: updatedMaintenance };
-          }
-          
-          return record;
+      status: newStatus
+    })
+      .then(() => {
+        setMaintenanceData((prevData) => {
+          return prevData.map((record) => {
+            if (record.machineID === machineID) {
+              const updatedMaintenance = [...record.maintenanceData];
+              updatedMaintenance[maintenanceIndex] = {
+                ...updatedMaintenance[maintenanceIndex],
+                status: newStatus
+              };
+              setAlert({
+                open: true,
+                severity: "success",
+                message: "Maintenance Status Updated!"
+              });
+              return { ...record, maintenanceData: updatedMaintenance };
+            }
+
+            return record;
+          });
+        });
+      })
+      .catch((error) => {
+        console.error("Error updating maintenance status:", error); // Debugging log
+        setAlert({
+          open: true,
+          severity: "error",
+          message: "Error updating maintenance status: see console"
         });
       });
-    }).catch((error) => {
-      console.error("Error updating maintenance status:", error); // Debugging log
-      setAlert({
-        open: true,
-        severity: "error",
-        message: "Error updating maintenance status: see console",
-      });
-    });
   };
-
-
-
- 
 
   return (
     <TableContainer
@@ -123,7 +130,7 @@ const MaintenanceTableContent = () => {
         borderTop: "1px solid #EAECF0",
         marginTop: "2.5rem",
         background: "#FFF",
-        height: "60%",
+        height: "60%"
       }}
     >
       <Table sx={{ minWidth: 650 }} aria-label="Maintenance Table">
@@ -143,42 +150,68 @@ const MaintenanceTableContent = () => {
             maintenanceData.map((record) =>
               Array.isArray(record.maintenanceData) ? (
                 record.maintenanceData.map((maintenance, index) => (
-                  <TableRow key={`${record.machineID}-${maintenance.nextMaintenance}`}>
-                    <TableCell align="center">{maintenance.machineID || "N/A"}</TableCell>
+                  <TableRow
+                    key={`${record.machineID}-${maintenance.nextMaintenance}`}
+                  >
+                    <TableCell align="center">
+                      {maintenance.machineID || "N/A"}
+                    </TableCell>
                     {/* <TableCell align="center">{record.machineName || "N/A"}</TableCell> */}
-                    <TableCell align="center">{maintenance.maintenanceName || "N/A"}</TableCell>
-                    <TableCell align="center">{maintenance.nextMaintenance || "N/A"}</TableCell>
-                    <TableCell align="center">{maintenance.recentMaintenance || "N/A"}</TableCell>
-                    <TableCell align="center">{maintenance.maintenanceDetails || "None"}</TableCell>
+                    <TableCell align="center">
+                      {maintenance.maintenanceName || "N/A"}
+                    </TableCell>
+                    <TableCell align="center">
+                      {maintenance.nextMaintenance || "N/A"}
+                    </TableCell>
+                    <TableCell align="center">
+                      {maintenance.recentMaintenance || "N/A"}
+                    </TableCell>
+                    <TableCell align="center">
+                      {maintenance.maintenanceDetails || "None"}
+                    </TableCell>
                     <TableCell align="center">
                       <Typography
                         sx={{
-                          color: maintenance.status === "Completed" ? "#28A745" : "#DC3545",
+                          color:
+                            maintenance.status === "Completed"
+                              ? "#28A745"
+                              : "#DC3545"
                         }}
                       >
                         {maintenance.status || "Unknown"}
                       </Typography>
                     </TableCell>
                     <TableCell align="center">
-  <Stack direction="row" gap={2} justifyContent="center">
-    {/* Show Done icon only if status is 'Pending' */}
-    {maintenance.status === 'Pending' && (
-      <DoneOutlinedIcon
-        sx={{ color: "#28A745", cursor: "pointer" }}
-        onClick={() => handleStatusChange(record.machineID, index, "Completed")}
-      />
-    )}
+                      <Stack direction="row" gap={2} justifyContent="center">
+                        {/* Show Done icon only if status is 'Pending' */}
+                        {maintenance.status === "Pending" && (
+                          <DoneOutlinedIcon
+                            sx={{ color: "#28A745", cursor: "pointer" }}
+                            onClick={() =>
+                              handleStatusChange(
+                                record.machineID,
+                                index,
+                                "Completed"
+                              )
+                            }
+                          />
+                        )}
 
-    {/* Show Clear icon only if status is 'Completed' */}
-    {maintenance.status === 'Completed' && (
-      <ClearOutlinedIcon
-        sx={{ color: "#DC3545", cursor: "pointer" }}
-        onClick={() => handleStatusChange(record.machineID, index, "Pending")}
-      />
-    )}
-  </Stack>
-</TableCell>
-
+                        {/* Show Clear icon only if status is 'Completed' */}
+                        {maintenance.status === "Completed" && (
+                          <ClearOutlinedIcon
+                            sx={{ color: "#DC3545", cursor: "pointer" }}
+                            onClick={() =>
+                              handleStatusChange(
+                                record.machineID,
+                                index,
+                                "Pending"
+                              )
+                            }
+                          />
+                        )}
+                      </Stack>
+                    </TableCell>
                   </TableRow>
                 ))
               ) : (
@@ -205,8 +238,6 @@ const MaintenanceTableContent = () => {
         severity={alert.severity}
         message={alert.message}
       />
-
-
     </TableContainer>
   );
 };

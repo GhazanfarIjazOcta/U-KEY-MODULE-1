@@ -2,11 +2,6 @@
 import { initializeApp } from "firebase/app";
 import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "firebase/auth";
 import { getDatabase, ref, set, get, child, update, remove } from "firebase/database";
-
-
-
-
-
 import {  onAuthStateChanged } from "firebase/auth";
 
 // TODO: Add SDKs for Firebase products that you want to use
@@ -40,10 +35,6 @@ const app = initializeApp(firebaseConfig);
 // Firebase services
 const auth = getAuth(app);
 const rtdb = getDatabase(app);  // This is the Realtime Database
-
-
 export { onAuthStateChanged };
-
-
 export { auth, rtdb, createUserWithEmailAndPassword, signInWithEmailAndPassword, ref, set, get, child, update, remove };
 

@@ -30,15 +30,15 @@ export default function CompaniesTableContent() {
 
   console.log("these are my organisations ", organizations);
 
-    const [alert, setAlert] = useState({
-      open: false,
-      severity: "success",
-      message: "",
-    });
-  
-    const handleAlertClose = () => {
-      setAlert({ ...alert, open: false });
-    };
+  const [alert, setAlert] = useState({
+    open: false,
+    severity: "success",
+    message: ""
+  });
+
+  const handleAlertClose = () => {
+    setAlert({ ...alert, open: false });
+  };
 
   useEffect(() => {
     const db = getDatabase();
@@ -114,7 +114,7 @@ export default function CompaniesTableContent() {
       setAlert({
         open: true,
         severity: "success",
-        message: "Organization Status Updated!",
+        message: "Organization Status Updated!"
       });
     } catch (err) {
       setError("Error updating status: " + err.message);
@@ -164,14 +164,14 @@ export default function CompaniesTableContent() {
       setAlert({
         open: true,
         severity: "success",
-        message: "Organization and users deleted.",
+        message: "Organization and users deleted."
       });
     } catch (err) {
       // setError("Error deleting organization: " + err.message);
       setAlert({
         open: true,
         severity: "error",
-        message: "Error deleting organization: " + err.message,
+        message: "Error deleting organization: " + err.message
       });
     }
   };
@@ -197,7 +197,6 @@ export default function CompaniesTableContent() {
       }}
     >
       <Table sx={{ minWidth: 650 }} aria-label="simple table">
-
         <TableHead sx={{ backgroundColor: "#FCFCFD" }}>
           <TableRow>
             <TableCell align="start">
@@ -238,106 +237,120 @@ export default function CompaniesTableContent() {
         </TableHead>
 
         <TableBody>
-  {organizations.map((organization) => {
-    // Get users for the current organization
-    const orgUsers = users.filter(
-      (user) => user.organizationID === organization.id
-    );
+          {organizations.map((organization) => {
+            // Get users for the current organization
+            const orgUsers = users.filter(
+              (user) => user.organizationID === organization.id
+            );
 
-    // Check if the organization includes a superAdmin
-    const hasSuperAdmin = orgUsers.some((user) => user.role === "superAdmin");
+            // Check if the organization includes a superAdmin
+            const hasSuperAdmin = orgUsers.some(
+              (user) => user.role === "superAdmin"
+            );
 
-    return (
-      <TableRow key={organization.id}>
-        <TableCell align="start">{organization.name}</TableCell>
-        <TableCell align="start">{organization.address}</TableCell>
-        <TableCell align="start">
-          {orgUsers
-            .filter((user) => user.role === "admin" || user.role === "superAdmin")
-            .map((user) => user.name)
-            .join(", ")}
-        </TableCell>
-        <TableCell align="start">
-          {orgUsers.filter((user) => user.role === "operator").length}
-        </TableCell>
-        <TableCell align="start">{orgUsers.length}</TableCell>
-        <TableCell align="start">{orgUsers.length}</TableCell>
-        <TableCell align="start">
-          <Box
-            sx={{
-              width: "80px",
-              height: "25px",
-              backgroundColor:
-                organization.status === "active" ? "#ECFDF3" : "#F2F4F7",
-              borderRadius: "40%",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              gap: "10px",
-            }}
-          >
-            <Box
-              sx={{
-                width: 6,
-                height: 6,
-                borderRadius: "50%",
-                backgroundColor:
-                  organization.status === "active" ? "#28A745" : "#6C757D",
-              }}
-            />
-            <Typography
-              fontWeight={500}
-              fontSize={"14px"}
-              sx={{
-                color:
-                  organization.status === "active" ? "#037847" : "#364254",
-              }}
-              fontFamily={"Inter"}
-            >
-              {organization.status}
-            </Typography>
-          </Box>
-        </TableCell>
-        <TableCell align="start">
-          <Stack direction={"row"} justifyContent="start">
-            {/* Toggle Button */}
-            <Switch
-              checked={organization.status === "active"}
-              onChange={() =>
-                !hasSuperAdmin &&
-                handleActivateDeactivate(organization.id, organization.status)
-              }
-              disabled={hasSuperAdmin}
-              color={organization.status === "active" ? "success" : "error"}
-              inputProps={{ "aria-label": "toggle organization status" }}
-            />
+            return (
+              <TableRow key={organization.id}>
+                <TableCell align="start">{organization.name}</TableCell>
+                <TableCell align="start">{organization.address}</TableCell>
+                <TableCell align="start">
+                  {orgUsers
+                    .filter(
+                      (user) =>
+                        user.role === "admin" || user.role === "superAdmin"
+                    )
+                    .map((user) => user.name)
+                    .join(", ")}
+                </TableCell>
+                <TableCell align="start">
+                  {orgUsers.filter((user) => user.role === "operator").length}
+                </TableCell>
+                <TableCell align="start">{orgUsers.length}</TableCell>
+                <TableCell align="start">{orgUsers.length}</TableCell>
+                <TableCell align="start">
+                  <Box
+                    sx={{
+                      width: "80px",
+                      height: "25px",
+                      backgroundColor:
+                        organization.status === "active"
+                          ? "#ECFDF3"
+                          : "#F2F4F7",
+                      borderRadius: "40%",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      gap: "10px"
+                    }}
+                  >
+                    <Box
+                      sx={{
+                        width: 6,
+                        height: 6,
+                        borderRadius: "50%",
+                        backgroundColor:
+                          organization.status === "active"
+                            ? "#28A745"
+                            : "#6C757D"
+                      }}
+                    />
+                    <Typography
+                      fontWeight={500}
+                      fontSize={"14px"}
+                      sx={{
+                        color:
+                          organization.status === "active"
+                            ? "#037847"
+                            : "#364254"
+                      }}
+                      fontFamily={"Inter"}
+                    >
+                      {organization.status}
+                    </Typography>
+                  </Box>
+                </TableCell>
+                <TableCell align="start">
+                  <Stack direction={"row"} justifyContent="start">
+                    {/* Toggle Button */}
+                    <Switch
+                      checked={organization.status === "active"}
+                      onChange={() =>
+                        !hasSuperAdmin &&
+                        handleActivateDeactivate(
+                          organization.id,
+                          organization.status
+                        )
+                      }
+                      disabled={hasSuperAdmin}
+                      color={
+                        organization.status === "active" ? "success" : "error"
+                      }
+                      inputProps={{
+                        "aria-label": "toggle organization status"
+                      }}
+                    />
 
-            {/* Delete Icon */}
-            <img
-              src={Delete}
-              width="40px"
-              height="30px"
-              onClick={() =>
-                !hasSuperAdmin && handleDeleteOrganization(organization.id)
-              }
-              style={{
-                cursor: hasSuperAdmin ? "not-allowed" : "pointer",
-                opacity: hasSuperAdmin ? 0.5 : 1,
-              }}
-              alt="Delete"
-            />
-          </Stack>
-        </TableCell>
-      </TableRow>
-    );
-  })}
-</TableBody>
-
-
-
+                    {/* Delete Icon */}
+                    <img
+                      src={Delete}
+                      width="40px"
+                      height="30px"
+                      onClick={() =>
+                        !hasSuperAdmin &&
+                        handleDeleteOrganization(organization.id)
+                      }
+                      style={{
+                        cursor: hasSuperAdmin ? "not-allowed" : "pointer",
+                        opacity: hasSuperAdmin ? 0.5 : 1
+                      }}
+                      alt="Delete"
+                    />
+                  </Stack>
+                </TableCell>
+              </TableRow>
+            );
+          })}
+        </TableBody>
       </Table>
-
-
 
       <CustomAlert
         open={alert.open}
@@ -345,8 +358,6 @@ export default function CompaniesTableContent() {
         severity={alert.severity}
         message={alert.message}
       />
-
-
     </TableContainer>
   );
 }

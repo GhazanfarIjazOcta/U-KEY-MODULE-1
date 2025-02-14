@@ -1,4 +1,8 @@
+
+// REACT IMPORTS
 import React, { useState, useEffect } from "react";
+
+// MUI IMPORTS
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
@@ -9,10 +13,14 @@ import DoneOutlinedIcon from "@mui/icons-material/DoneOutlined";
 import ClearOutlinedIcon from "@mui/icons-material/ClearOutlined";
 import Paper from "@mui/material/Paper";
 import { Box, Button, Stack, Typography } from "@mui/material";
+
+// ASSESTS IMPORTS
 import OperatorsIcon from "../../../assets/Sidebar/OperatorsIconSelected.svg";
 import Edit from "../../../assets/Table/Edit.png";
 import Delete from "../../../assets/Table/Delete.png";
 import { TableStyles } from "../../UI/Styles";
+
+// FIREBASE IMPORTS
 import { getDatabase, ref, get, onValue } from "firebase/database";
 import { onAuthStateChanged } from "firebase/auth";
 import { auth } from "../../../firebase"; // Firebase auth instance
@@ -20,15 +28,9 @@ import { useUser } from "../../../Context/UserContext";
 import { useNavigate } from "react-router-dom";
 
 export default function AllOperatorsTable() {
-
-
-
   const navigate = useNavigate();
-
-
   const { user } = useUser(); // Destructure user data from context
   const CurrentOrganizationID = user.organizationID;
-
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -127,8 +129,7 @@ export default function AllOperatorsTable() {
             textTransform: "none",
             fontSize: "0.75rem"
           }}
-
-          onClick={()=> navigate("operators")}
+          onClick={() => navigate("operators")}
         >
           View More
         </Button>

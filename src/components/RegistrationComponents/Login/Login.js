@@ -159,6 +159,7 @@ const Login = () => {
   };
 
   const signupNavigation = () => navigate("/signup");
+  const registerAsForemanNavigation = () => navigate("/foreman-signup");
 
   if (loading) {
     return <div>{loading && <Loader />}</div>;
@@ -217,7 +218,19 @@ const Login = () => {
             }}
             onClick={signupNavigation}
           >
-            Register here!
+            Register Admin here!
+          </Typography>
+          <Typography
+            color={"#F38712"}
+            style={{
+              fontWeight: 600,
+              fontSize: "1rem",
+              fontFamily: "Inter",
+              cursor: "pointer"
+            }}
+            onClick={registerAsForemanNavigation}
+          >
+            Register as Foreman!
           </Typography>
         </Stack>
 
